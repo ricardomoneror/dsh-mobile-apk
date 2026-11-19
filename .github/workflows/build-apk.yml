@@ -126,6 +126,9 @@ jobs:
           yes | "$SDKM" --licenses > /dev/null 2>&1 || true
           "$SDKM" --install "ndk;27.0.12077973" > /dev/null
           ls "$ANDROID_HOME/ndk/27.0.12077973/source.properties" >/dev/null
+          # resolveNdk prioriza ANDROID_NDK_HOME sobre el SDK: el runner trae la
+          # var apuntando a 27.3, hay que re-apuntarla al 27.0 instalado.
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> "$GITHUB_ENV"
 
 
       - name: 设置开发预览安装号
