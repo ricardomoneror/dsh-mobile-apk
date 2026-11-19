@@ -389,7 +389,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.section',
     id: 'android-dev',
     order: 99,
-    label: () => tr('开发者选项', 'Developer options'),
+    label: () => tr('开发者选项', 'Developer options', 'Opciones de desarrollador'),
     // 开发者选项子区（2026-08-23）：ADB 授权面板等安卓调试设施挂进此槽——不开独立导航行。
     children: { 'settings.dev.item': { kind: 'list', scope: 'root' } },
   }, DevSection))
@@ -402,7 +402,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.section',
     id: 'android-apk-update',
     order: 96,
-    label: () => tr('应用更新', 'App updates'),
+    label: () => tr('应用更新', 'App updates', 'Actualizaciones'),
   }, ApkUpdateSection))
 
   // 通知（0.14.1 批 3 / P3-5）：提醒方式与「关掉会怎样」是每个用户都要做的决定，
@@ -411,7 +411,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.section',
     id: 'android-notify',
     order: 97,
-    label: () => tr('通知', 'Notifications'),
+    label: () => tr('通知', 'Notifications', 'Notificaciones'),
   }, NotifySettingsSection))
 
   // 手机控制（0.14.0 用户定例）：把屏幕/Shizuku/虚拟屏/浮窗/无障碍/强制销毁收进独立设置页。
@@ -419,7 +419,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.section',
     id: 'android-phone-control',
     order: 98,
-    label: () => tr('手机控制', 'Phone control'),
+    label: () => tr('手机控制', 'Phone control', 'Control del teléfono'),
   }, PhoneControlSection))
 
   // Linux 环境（实验性内部插件）：**唯一注册方是本文件**（0.15.1 改回）。
@@ -435,7 +435,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.section',
     id: 'linux-environment',
     order: 95,
-    label: () => tr('Linux环境', 'Linux environment'),
+    label: () => tr('Linux环境', 'Linux environment', 'Entorno Linux'),
   }, LinuxEnvironmentSection))
 
   // Android general-settings rows (issue #59): immersive status-bar toggle.
@@ -461,7 +461,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.section',
     id: 'android-about',
     order: 70,
-    label: () => tr('关于', 'About'),
+    label: () => tr('关于', 'About', 'Acerca de'),
   }, AboutSection))
 
   // 插件市场入口：在「插件」页的「添加插件」下拉里。点选后发 `store` 命令回执，
@@ -473,7 +473,7 @@ export function apply(ctx: ClientContext): void {
     name: 'settings.general.item',
     id: 'android-general',
     order: 90,
-    label: () => tr('Android 显示', 'Android display'),
+    label: () => tr('Android 显示', 'Android display', 'Pantalla Android'),
   }, GeneralSettings))
 
   ctx.inject(['resources', 'sidebarRight', 'sidebarRightTabs'], scope => { registerConversationDock(scope) })

@@ -59,6 +59,53 @@ internal object WebViewPolyfill {
       "try{return new U(input,base)}catch(e){return null}" +
       "};" +
       "}" +
+      // AbortSignal.any (Chrome 116):conversation.chat.node lo llama para el flujo de mensajes;
+      // si falta, el slot entry crashea y el cuerpo de la respuesta queda en blanco (mitad de la
+      // causa real del issue #1806).
+      "if(typeof AbortSignal!=='undefined'&&typeof AbortSignal.any!=='function'){" +
+      "AbortSignal.any=function(sigs){" +
+      "var list=Array.prototype.slice.call(sigs||[]);var c=new AbortController();" +
+      "if(list.length===0)return c.signal;" +
+      "for(var i=0;i<list.length;i++){" +
+      "(function(sig){" +
+      "if(sig==null)return;" +
+      "if(sig.aborted){if(!c.signal.aborted)try{c.abort(sig.reason)}catch(e){c.abort()};return}" +
+      "sig.addEventListener('abort',function(){" +
+      "if(!c.signal.aborted)try{c.abort(sig.reason)}catch(e){c.abort()}" +
+      "},{once:true});" +
+      "})(list[i]);" +
+      "}" +
+      "return c.signal;" +
+      "};" +
+      "}" +
+      // Promise.withResolvers (Chrome 119):usado masivamente por el bundle del cliente.
+      "if(typeof Promise!=='undefined'&&typeof Promise.withResolvers!=='function'){" +
+      "Promise.withResolvers=function(){" +
+      "var resolve,reject;" +
+      "var p=new Promise(function(res,rej){resolve=res;reject=rej});" +
+      "return {promise:p,resolve:resolve,reject:reject};" +
+      "};" +
+      "}" +
+      // structuredClone (Chrome 98):solo si falta. Clon recursivo, no JSON:
+      // JSON destruye Date/Map/Set/ArrayBuffer y deja sin renderizar respuestas.
+      "if(typeof structuredClone!=='function'){" +
+      "var __dsClone=function(v,seen){" +
+      "if(v===null||typeof v!=='object')return v;" +
+      "if(v instanceof Date)return new Date(v.getTime());" +
+      "if(v instanceof RegExp)return new RegExp(v.source,v.flags);" +
+      "if(seen.has(v))return seen.get(v);" +
+      "if(Array.isArray(v)){var a=[];seen.set(v,a);" +
+      "for(var i=0;i<v.length;i++)a[i]=__dsClone(v[i],seen);return a}" +
+      "if(v instanceof Map){var mp=new Map();seen.set(v,mp);" +
+      "v.forEach(function(mv,mk){mp.set(__dsClone(mk,seen),__dsClone(mv,seen))});return mp}" +
+      "if(typeof Set!=='undefined'&&v instanceof Set){var st=new Set();seen.set(v,st);" +
+      "v.forEach(function(sv){st.add(__dsClone(sv,seen))});return st}" +
+      "var o={};seen.set(v,o);" +
+      "var ks=Object.keys(v);for(var k=0;k<ks.length;k++)o[ks[k]]=__dsClone(v[ks[k]],seen);" +
+      "return o;" +
+      "};" +
+      "window.structuredClone=function(v){return __dsClone(v,new Map())};" +
+      "}" +
       "}catch(e){}" +
       "})();"
 

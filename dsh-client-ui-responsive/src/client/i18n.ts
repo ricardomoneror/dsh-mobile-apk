@@ -12,18 +12,41 @@
  *
  * Chinese stays the default: an empty `<html lang>` (tests, hosts that have not
  * synchronized the attribute yet) must not flip every surface to English.
+ *
+ * Spanish is excluded here so that a Spanish locale does not fall through to
+ * English when the caller supplies Spanish copy to `tr`.
  */
 export function isEnglish(): boolean {
   try {
     const language = document.documentElement.lang.trim().toLowerCase()
-    return language !== '' && language !== 'zh' && !language.startsWith('zh-')
+    return (
+      language !== '' &&
+      language !== 'zh' &&
+      !language.startsWith('zh-') &&
+      !language.startsWith('es')
+    )
   } catch {
     return false
   }
 }
 
-/** Pick Chinese or English copy for the active locale. */
-export function tr(zh: string, en: string): string {
+/** Whether the active locale is Spanish (any `es` or `es-*` tag). */
+export function isSpanish(): boolean {
+  try {
+    return document.documentElement.lang.trim().toLowerCase().startsWith('es')
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Pick copy for the active locale.
+ *
+ * Spanish is used only when the caller supplies it; otherwise Spanish falls
+ * back to English rather than Chinese, matching `isEnglish`.
+ */
+export function tr(zh: string, en: string, es?: string): string {
+  if (es !== undefined && isSpanish()) return es
   return isEnglish() ? en : zh
 }
 
