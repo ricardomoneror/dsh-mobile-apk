@@ -169,11 +169,11 @@ class AppLanguageTest {
     assertTrue("固定英文的回退是 en", forcedEnglish.contains("var baked=\"en\""))
   }
 
-  /** 桥只认 system/zh/en 三档；语言包 id 不得被静默归一成「跟随系统」。 */
+  /** 桥只认 system/zh/en/es 四档；语言包 id 不得被静默归一成「跟随系统」。 */
   @Test
   fun bootstrapScriptDropsLocalesTheBridgeCannotStore() {
     val script = AppLanguage.bootstrapScript("system", listOf("zh-CN"))
-    assertTrue("非三档值必须丢弃", script.contains("if(next!=='zh'&&next!=='en')return"))
+    assertTrue("非四档值必须丢弃", script.contains("if(next!=='zh'&&next!=='en'&&next!=='es')return"))
   }
 
   /**

@@ -198,7 +198,7 @@ class OverlayBatch5Test {
   fun `两枚圆钮必须补 contentDescription 且视觉尺寸不变`() {
     val panel = codeOnly(source("OverlayPanel.kt"))
     assertTrue("发送必须有无障碍名", panel.contains("roundButton(\"overlay-send\", R.drawable.dsh_ic_send, 16, 0xFF4176E6.toInt(), t(\"发送\", \"Send\", \"Enviar\"))"))
-    assertTrue("停止必须有无障碍名", panel.contains("roundButton(\"overlay-stop\", R.drawable.dsh_ic_stop, 12, 0xFFE04848.toInt(), t(\"停止当前任务\", \"Stop current task\", \"Detener la tarea actual\"))"))
+    assertTrue("停止必须有无障碍名", panel.contains("roundButton(\"overlay-stop\", R.drawable.dsh_ic_stop, 12, 0xFFE04848.toInt(), t(\"停止当前任务\", \"Stop current task\", \"Detener tarea actual\"))"))
     assertTrue("外层命中区撑到热区下限、内层保持 36dp 观感", panel.contains("FrameLayout.LayoutParams((36 * dp).toInt(), (36 * dp).toInt(), Gravity.CENTER)"))
     val report = codeOnly(source("OverlayReport.kt"))
     assertTrue("回报栏关闭键必须有无障碍名", report.contains("contentDescription = UiText.t(svc, \"关闭工作汇报\", \"Close work report\", \"Cerrar informe de trabajo\")"))
