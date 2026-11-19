@@ -45,9 +45,9 @@ export function MarketplaceMenuItem({ onDismiss, ctx }: MarketplaceMenuItemProps
       }}
     >
       <span className="dsh-market-item">
-        <span>{tr('插件市场', 'Plugin store')}</span>
+        <span>{tr('插件市场', 'Plugin store', 'Tienda de complementos')}</span>
         <span className="dsh-market-item-desc">
-          {tr('浏览社区插件，按移动端兼容性筛选', 'Browse community plugins, filtered by mobile compatibility')}
+          {tr('浏览社区插件，按移动端兼容性筛选', 'Browse community plugins, filtered by mobile compatibility', 'Explora complementos de la comunidad, filtrados por compatibilidad móvil')}
         </span>
       </span>
     </MenuItemButton>

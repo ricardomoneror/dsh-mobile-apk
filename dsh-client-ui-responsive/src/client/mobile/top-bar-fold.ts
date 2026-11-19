@@ -369,11 +369,11 @@ export class TopBarFold {
 
   private syncCopy(): void {
     const label = this.arrow?.firstElementChild
-    const text = tr('更多选项', 'More')
+    const text = tr('更多选项', 'More', 'Más opciones')
     if (label && label.textContent !== text) label.textContent = text
-    const name = tr('更多选项', 'More options')
+    const name = tr('更多选项', 'More options', 'Más opciones')
     if (this.arrow?.getAttribute('aria-label') !== name) this.arrow?.setAttribute('aria-label', name)
-    const empty = tr('当前会话暂无更多选项', 'No additional options in this conversation')
+    const empty = tr('当前会话暂无更多选项', 'No additional options in this conversation', 'No hay más opciones en esta conversación')
     if (this.container?.getAttribute(EMPTY_ATTR) !== empty) this.container?.setAttribute(EMPTY_ATTR, empty)
   }
 

@@ -37,15 +37,15 @@ class NotifyActionLabelsTest {
   fun 四个动作标题必须走双语通道() {
     val code = codeOnly(source("NotifyCenter.kt"))
     val expected = listOf(
-      "打开应用作答" to "Open app to answer",
-      "批准一次" to "Allow once",
-      "拒绝" to "Reject",
-      "重试" to "Retry",
+      Triple("打开应用作答", "Open app to answer", "Abrir la app para responder"),
+      Triple("批准一次", "Allow once", "Aprobar una vez"),
+      Triple("拒绝", "Reject", "Rechazar"),
+      Triple("重试", "Retry", "Reintentar"),
     )
-    for ((zh, en) in expected) {
+    for ((zh, en, es) in expected) {
       assertTrue(
-        "动作标题「" + zh + "」必须走 UiText.t（中英各一份）",
-        code.contains("UiText.t(app, \"" + zh + "\", \"" + en + "\")"),
+        "动作标题「" + zh + "」必须走 UiText.t（中/英/西各一份）",
+        code.contains("UiText.t(app, \"" + zh + "\", \"" + en + "\", \"" + es + "\")"),
       )
     }
   }

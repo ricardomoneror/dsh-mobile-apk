@@ -111,6 +111,8 @@ object NotifyCenter {
     val category: String,
     val description: String,
     val descriptionEn: String,
+    /** Descripción del canal en espanol; null-safe: la fila siempre la trae. */
+    val descriptionEs: String,
     val candidates: List<String>,
     val importance: Int,
     val popup: Boolean,
@@ -125,22 +127,27 @@ object NotifyCenter {
   ) {
     SILENT(
       "silent", "看门狗与引擎状态；静默更新，不弹出", "Watchdog and engine status; silent updates, no popup",
+      "Vigilante y estado del motor; actualizaciones silenciosas, sin aviso emergente",
       listOf("dsh-silent"), NotificationManager.IMPORTANCE_LOW, false, false,
     ),
     TODO(
       "todo", "任务步骤进度；静默更新，不弹出", "Task step progress; silent updates, no popup",
+      "Progreso de pasos de la tarea; actualizaciones silenciosas, sin aviso emergente",
       listOf("dsh-todo-progress"), NotificationManager.IMPORTANCE_LOW, false, false,
     ),
     REPORT(
       "report", "每轮任务结束的汇报；需要出现在锁屏之上", "End-of-run report; must appear above the lock screen",
+      "Informe al terminar cada tarea; debe aparecer sobre la pantalla de bloqueo",
       listOf("dsh-report", "dsh-report-h2"), NotificationManager.IMPORTANCE_HIGH, true, false,
     ),
     QUESTION(
       "question", "引擎向你提问；可直接在通知栏回复", "The engine asks you something; you can reply from the shade",
+      "El motor te hace una pregunta; puedes responder desde la barra de notificaciones",
       listOf("dsh-question", "dsh-question-h2"), NotificationManager.IMPORTANCE_HIGH, true, true,
     ),
     APPROVAL(
       "approval", "工具执行前的授权请求；请确认不是他人代答", "Approval request before a tool runs; make sure nobody else answers",
+      "Solicitud de aprobación antes de ejecutar una herramienta; confirma que nadie responde por ti",
       listOf("dsh-auth", "dsh-auth-h2", "dsh-auth-h3"), NotificationManager.IMPORTANCE_HIGH, true, true,
     );
 
@@ -154,7 +161,7 @@ object NotifyCenter {
     fun label(app: Context? = null): String = UserCopy.notifyCategory(category, app)
 
     /** 渠道说明（跟随语言）。 */
-    fun descriptionText(app: Context? = null): String = UiText.t(app, description, descriptionEn)
+    fun descriptionText(app: Context? = null): String = UiText.t(app, description, descriptionEn, descriptionEs)
 
     companion object {
       fun of(category: String): Face? = values().firstOrNull { it.category == category }
@@ -554,7 +561,7 @@ object NotifyCenter {
     // 否则切英文后通知设置里仍能看到「DeepCode 引擎」。
     val engineCh = manager.getNotificationChannel("engine")
     if (engineCh != null) {
-      val want = UserCopy.APP_NAME + UiText.t(app, " 引擎", " engine")
+      val want = UserCopy.APP_NAME + UiText.t(app, " 引擎", " engine", " motor")
       if (engineCh.name?.toString().orEmpty() != want) {
         engineCh.name = want
         manager.createNotificationChannel(engineCh)
@@ -1115,7 +1122,7 @@ object NotifyCenter {
     when (face) {
       Face.SILENT -> {
         b.setContentTitle(entry.displayTitle(app))
-        b.setContentText(entry.text.ifBlank { UiText.t(app, "引擎状态更新", "Engine status update") })
+        b.setContentText(entry.text.ifBlank { UiText.t(app, "引擎状态更新", "Engine status update", "Actualización de estado del motor") })
         b.setSilent(true) // 第二道保险（javadoc 明写它同时阻止 peek）
         if (entry.count > 1) b.setSubText(UiText.t(app, "共 " + entry.count + " 条", entry.count.toString() + " updates"))
       }
@@ -1147,7 +1154,7 @@ object NotifyCenter {
         b.setContentTitle(first?.header?.ifBlank { null } ?: UserCopy.notifyCategory(Face.QUESTION.category))
         // S3-4：旧写法是 `first?.question ?: entry.text.ifBlank {...}`——`first.question` 是**空串**
         // （非 null）时 elvis 不触发，通知正文于是空白。`ifBlank { null }` 才能让空串也落到兜底。
-        b.setContentText(first?.question?.ifBlank { null } ?: entry.text.ifBlank { UiText.t(app, "引擎正在等待你的回答", "The engine is waiting for your answer") })
+        b.setContentText(first?.question?.ifBlank { null } ?: entry.text.ifBlank { UiText.t(app, "引擎正在等待你的回答", "The engine is waiting for your answer", "El motor espera tu respuesta") })
         b.setStyle(NotificationCompat.BigTextStyle().bigText(questionBigText(entry)))
         b.setPriority(NotificationCompat.PRIORITY_HIGH)
         // S3-6：**不再** setTimeoutAfter(30 分钟)。引擎侧的提问没有超时，而通知栏是唯一的作答入口
@@ -1165,8 +1172,8 @@ object NotifyCenter {
             ?: entry.displayTitle(app).ifBlank { UserCopy.notifyCategory(Face.APPROVAL.category, app) },
         )
         b.setContentText(approvalLine(app, entry))
-        b.setStyle(NotificationCompat.BigTextStyle().bigText(approvalLine(app, entry) + "\n" + UiText.t(app, "仅本次生效", "Applies once")))
-        b.setSubText(UiText.t(app, "仅本次生效", "Applies once"))
+        b.setStyle(NotificationCompat.BigTextStyle().bigText(approvalLine(app, entry) + "\n" + UiText.t(app, "仅本次生效", "Applies once", "Válido solo esta vez")))
+        b.setSubText(UiText.t(app, "仅本次生效", "Applies once", "Válido solo esta vez"))
         b.setPriority(NotificationCompat.PRIORITY_HIGH)
         addApprovalActions(app, b, entry)
       }
@@ -1189,7 +1196,7 @@ object NotifyCenter {
           .setSmallIcon(android.R.drawable.stat_notify_chat)
           .setContentTitle(UserCopy.APP_NAME)
           // 锁屏公版文案同样要跟语言走（2026-10-29 真机：EN 下这条仍是中文）。
-          .setContentText(UiText.t(app, "有一项需要你的决定", "There is a decision waiting for you"))
+          .setContentText(UiText.t(app, "有一项需要你的决定", "There is a decision waiting for you", "Hay una decisión esperándote"))
           .build(),
       )
     }
@@ -1208,8 +1215,8 @@ object NotifyCenter {
     val sb = StringBuilder(reportLine(entry, app))
     sb.append("\n").append(UserCopy.reportMetaLine(entry.durationLabel(), entry.toolCount, app))
     if (entry.presentedFiles.isNotEmpty()) {
-      sb.append("\n").append(UiText.t(app, "产出：", "Output: "))
-        .append(entry.presentedFiles.joinToString(UiText.t(app, "、", ", ")))
+      sb.append("\n").append(UiText.t(app, "产出：", "Output: ", "Entregables: "))
+        .append(entry.presentedFiles.joinToString(UiText.t(app, "、", ", ", ", ")))
     }
     return sb.toString()
   }
@@ -1219,7 +1226,7 @@ object NotifyCenter {
    * 用户要确认的**正是那个目标**；抹掉它等于让用户在不知道放行什么的情况下点「批准一次」。
    */
   private fun approvalLine(app: Context, entry: NotifyEntry): String {
-    val tool = entry.toolName.ifBlank { UiText.t(app, "未知工具", "unknown tool") }
+    val tool = entry.toolName.ifBlank { UiText.t(app, "未知工具", "unknown tool", "herramienta desconocida") }
     val reason = entry.reason.trim()
     return if (reason.isBlank()) {
       UiText.t(app, "工具 " + tool + " 请求执行", "Tool " + tool + " wants to run")
@@ -1415,7 +1422,7 @@ object NotifyCenter {
       b.addAction(
         NotificationCompat.Action.Builder(
           android.R.drawable.ic_menu_view,
-          UiText.t(app, "打开应用作答", "Open app to answer"),
+          UiText.t(app, "打开应用作答", "Open app to answer", "Abrir la app para responder"),
           contentIntent(app, entry),
         ).build(),
       )
@@ -1426,12 +1433,12 @@ object NotifyCenter {
     // 审批动作恒为两个（NT-21）：批准一次 / 拒绝。不提供任何常驻授权承诺。
     val approve = NotificationCompat.Action.Builder(
       android.R.drawable.ic_menu_edit,
-      UiText.t(app, "批准一次", "Allow once"),
+      UiText.t(app, "批准一次", "Allow once", "Aprobar una vez"),
       actionPending(app, entry, NotifyActionReceiver.ACTION_APPROVE, mutable = false),
     )
     val reject = NotificationCompat.Action.Builder(
       android.R.drawable.ic_menu_close_clear_cancel,
-      UiText.t(app, "拒绝", "Reject"),
+      UiText.t(app, "拒绝", "Reject", "Rechazar"),
       actionPending(app, entry, NotifyActionReceiver.ACTION_REJECT, mutable = false),
     )
     if (APPROVAL_REQUIRE_UNLOCK) {
@@ -1504,7 +1511,7 @@ object NotifyCenter {
         retry,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
       )
-      b.addAction(NotificationCompat.Action.Builder(android.R.drawable.ic_menu_rotate, UiText.t(app, "重试", "Retry"), pending).build())
+      b.addAction(NotificationCompat.Action.Builder(android.R.drawable.ic_menu_rotate, UiText.t(app, "重试", "Retry", "Reintentar"), pending).build())
     }
     (app.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
       .notify(failureId(kind, eventId), b.build())
@@ -1575,13 +1582,13 @@ object NotifyCenter {
     val entry = when (category) {
       "todo" -> NotifyEntry(
         kind = "todo", sessionId = "test", total = 5, done = 2,
-        current = UiText.t(app, "测试进度", "Test progress"),
+        current = UiText.t(app, "测试进度", "Test progress", "Progreso de prueba"),
       )
       "report" -> NotifyEntry(
         kind = "report", sessionId = "test", outcome = "completed",
-        title = UiText.t(app, "测试会话", "Test session"),
-        outcomeLabel = UiText.t(app, "已完成", "Completed"),
-        summary = UiText.t(app, "这是一条工作汇报测试", "This is a work-report notification test"),
+        title = UiText.t(app, "测试会话", "Test session", "Sesión de prueba"),
+        outcomeLabel = UiText.t(app, "已完成", "Completed", "Completado"),
+        summary = UiText.t(app, "这是一条工作汇报测试", "This is a work-report notification test", "Esta es una prueba de notificación de informe de trabajo"),
         durationMs = 12_000, toolCount = 3,
       )
       "question" -> NotifyEntry(
@@ -1589,20 +1596,20 @@ object NotifyCenter {
         questions = listOf(
           NotifyQuestion(
             "q1",
-            UiText.t(app, "测试提问", "Test question"),
-            UiText.t(app, "现在方便吗？", "Is now a good time?"),
+            UiText.t(app, "测试提问", "Test question", "Pregunta de prueba"),
+            UiText.t(app, "现在方便吗？", "Is now a good time?", "¿Es un buen momento?"),
             emptyList(),
           ),
         ),
       )
       "approval" -> NotifyEntry(
         kind = "approval", eventId = "test-a", toolName = "bash",
-        reason = UiText.t(app, "测试授权请求", "Test approval request"),
+        reason = UiText.t(app, "测试授权请求", "Test approval request", "Solicitud de aprobación de prueba"),
       )
       else -> NotifyEntry(
         kind = "silent", event = "test",
-        title = UiText.t(app, "后台动态测试", "Background activity test"),
-        text = UiText.t(app, "引擎状态正常", "Engine status is healthy"),
+        title = UiText.t(app, "后台动态测试", "Background activity test", "Prueba de actividad en segundo plano"),
+        text = UiText.t(app, "引擎状态正常", "Engine status is healthy", "El estado del motor es normal"),
       )
     }
     return notifyEvent(context, entry)

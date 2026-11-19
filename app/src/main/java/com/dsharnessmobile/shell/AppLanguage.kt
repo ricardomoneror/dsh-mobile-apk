@@ -21,8 +21,10 @@ internal object AppLanguage {
   const val MODE_SYSTEM = "system"
   const val MODE_ZH = "zh"
   const val MODE_EN = "en"
+  /** Espanol: el nucleo trae locale/es.json en todos los paquetes del cliente. */
+  const val MODE_ES = "es"
 
-  val MODES = listOf(MODE_SYSTEM, MODE_ZH, MODE_EN)
+  val MODES = listOf(MODE_SYSTEM, MODE_ZH, MODE_EN, MODE_ES)
 
   /** Stored mode; an unreadable preference falls back to following the system. */
   fun mode(context: Context): String = try {
@@ -48,6 +50,7 @@ internal object AppLanguage {
   fun dshLocale(context: Context): String = when (val selected = mode(context)) {
     MODE_ZH -> MODE_ZH
     MODE_EN -> MODE_EN
+    MODE_ES -> MODE_ES
     else -> systemLocale(context)
   }
 
@@ -68,7 +71,9 @@ internal object AppLanguage {
     val primary = configuration?.locales?.let { locales: LocaleList ->
       if (locales.isEmpty) null else locales[0].language
     } ?: Locale.getDefault().language
-    return if (primary.equals(MODE_ZH, ignoreCase = true)) MODE_ZH else MODE_EN
+    if (primary.equals(MODE_ZH, ignoreCase = true)) return MODE_ZH
+    if (primary.equals(MODE_ES, ignoreCase = true)) return MODE_ES
+    return MODE_EN
   }
 
   /** System language tags in preference order, for dsh's own locale detector. */
@@ -134,7 +139,11 @@ internal object AppLanguage {
   fun wrap(base: Context): Context {
     if (mode(base) == MODE_SYSTEM) return base
     val configuration = Configuration(base.resources.configuration)
-    val language = if (mode(base) == MODE_ZH) Locale.SIMPLIFIED_CHINESE else Locale.ENGLISH
+    val language = when (mode(base)) {
+      MODE_ZH -> Locale.SIMPLIFIED_CHINESE
+      MODE_ES -> Locale("es")
+      else -> Locale.ENGLISH
+    }
     configuration.setLocales(LocaleList(language))
     return try {
       base.createConfigurationContext(configuration)
@@ -239,12 +248,12 @@ internal object AppLanguage {
    * @returns `zh` or `en`.
    */
   internal fun expectedLocale(mode: String, languages: List<String>): String {
-    if (mode == MODE_ZH || mode == MODE_EN) return mode
+    if (mode != MODE_SYSTEM) return mode
     for (tag in languages.filter { it.isNotBlank() }.distinct()) {
       val requested = tag.lowercase(Locale.ROOT)
-      if (requested == MODE_ZH || requested == MODE_EN) return requested
+      if (requested in MODES) return requested
       val primary = requested.substringBefore('-')
-      if (primary == MODE_ZH || primary == MODE_EN) return primary
+      if (primary in MODES) return primary
     }
     return MODE_EN
   }
@@ -288,11 +297,11 @@ internal object AppLanguage {
       "var mode=null;" +
       "try{var b=window.androidBridge;" +
       "if(b&&typeof b.getUiLanguage==='function')mode=String(b.getUiLanguage())}catch(e){}" +
-      "if(mode==='zh'||mode==='en')return mode;" +
+      "if(mode==='zh'||mode==='en'||mode==='es')return mode;" +
       "if(mode==='system'){for(var i=0;i<tags.length;i++){" +
       "var t=String(tags[i]).toLowerCase();" +
-      "if(t==='zh'||t==='en')return t;" +
-      "var p=t.split('-')[0];if(p==='zh'||p==='en')return p}" +
+      "if(t==='zh'||t==='en'||t==='es')return t;" +
+      "var p=t.split('-')[0];if(p==='zh'||p==='en'||p==='es')return p}" +
       "return 'en'}" +
       "return baked}" +
       "try{document.addEventListener('click',arm,true);" +
@@ -301,8 +310,8 @@ internal object AppLanguage {
       "globalThis.__DSH_LOCALE__={read:function(){return Promise.resolve({languages:tags,preference:$preference})}," +
       "onChange:function(locale){if(!armed)return;armed=false;" +
       "var next=String(locale);" +
-      // 桥只认三档；语言包 id 不在这里静默降级成「跟随系统」。
-      "if(next!=='zh'&&next!=='en')return;" +
+      // 桥只认四档；语言包 id 不在这里静默降级成「跟随系统」。
+      "if(next!=='zh'&&next!=='en'&&next!=='es')return;" +
       "if(next===shown())return;" +
       "try{var b=window.androidBridge;" +
       "if(b&&typeof b.setUiLanguage==='function')b.setUiLanguage(next)" +

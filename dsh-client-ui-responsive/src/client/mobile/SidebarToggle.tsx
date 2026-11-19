@@ -20,7 +20,7 @@ import css from './MobileChrome.module.css'
 import { tr } from '../i18n.ts'
 
 /** Copy follows the active UI language (see i18n.ts). */
-const toggleLabel = (open: boolean): string => (open ? tr('关闭导航', 'Close navigation') : tr('打开导航', 'Open navigation'))
+const toggleLabel = (open: boolean): string => (open ? tr('关闭导航', 'Close navigation', 'Cerrar navegación') : tr('打开导航', 'Open navigation', 'Abrir navegación'))
 
 /** The apply-world callbacks this entry may use. */
 export interface SidebarToggleInjected {
@@ -114,7 +114,7 @@ export function SidebarToggle({ toggleSidebar }: SidebarToggleProps) {
       data-dsh-sidebar-toggle=""
       aria-label={
         browserPending && !open
-          ? tr('打开导航', 'Open navigation') + tr('（有一个浏览器标签在等你展开侧栏）', ' (a browser tab is waiting behind the sidebar)')
+          ? tr('打开导航', 'Open navigation', 'Abrir navegación') + tr('（有一个浏览器标签在等你展开侧栏）', ' (a browser tab is waiting behind the sidebar)', ' (hay una pestaña del navegador esperando tras la barra lateral)')
           : toggleLabel(open)
       }
       aria-expanded={open}
@@ -129,7 +129,7 @@ export function SidebarToggle({ toggleSidebar }: SidebarToggleProps) {
         title row keeps its width the rest of the time. */}
     {browserPending && !open && (
       <span className={css.pendingHint} data-dsh-browser-pending-hint="">
-        {tr('有浏览器标签待展开', 'A browser tab is ready')}
+        {tr('有浏览器标签待展开', 'A browser tab is ready', 'Hay una pestaña del navegador lista')}
       </span>
     )}
     </>

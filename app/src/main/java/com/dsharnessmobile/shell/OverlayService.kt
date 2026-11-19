@@ -162,7 +162,7 @@ class OverlayService : Service() {
       if (legacy != null && shouldImportLegacyOverlayDraft(current.text, legacy, legacyDraftBaselines[activeSessionId])) {
         overlay.restoreDraftSnapshot(current.copy(text = legacy, selectionStart = legacy.length, selectionEnd = legacy.length))
       } else if (legacy != null && legacy != legacyDraftBaselines[activeSessionId] && legacy != current.text) {
-        flashStatus(t("两份草稿均已保留，未覆盖当前输入", "Both drafts kept; current input was not overwritten"))
+        flashStatus(t("两份草稿均已保留，未覆盖当前输入", "Both drafts kept; current input was not overwritten", "Ambos borradores conservados; no se sobrescribió la entrada actual"))
       }
       if (existing != null) overlay.resumeUi()
       overlay.onPendingChanged()
@@ -513,7 +513,7 @@ class OverlayService : Service() {
       expanded = false
       panelParams = null
       unit.visibility = View.GONE
-      flashStatus(t("面板打开失败，请检查悬浮窗权限", "Could not open the panel; check overlay permission"))
+      flashStatus(t("面板打开失败，请检查悬浮窗权限", "Could not open the panel; check overlay permission", "No se pudo abrir el panel; revisa el permiso de burbuja flotante"))
       return
     }
     unit.post { positionPanel() }   // 首帧拿到真实宽高后再精确对位一次
@@ -796,11 +796,11 @@ class OverlayService : Service() {
         main.postDelayed({
           if (expanded && !sessionBusy && pendingKind.isEmpty() && !panelOccupied) {
             hidePanel()
-            if (dropped) flashStatus(t("已完成", "Done"))
+            if (dropped) flashStatus(t("已完成", "Done", "Completado"))
           }
         }, 900)
       } else if (dropped && expanded) {
-        flashStatus(t("已完成", "Done"))
+        flashStatus(t("已完成", "Done", "Completado"))
       }
     }
     if (expanded) panel.updateBallOnly() else updateBallOnly()
@@ -832,7 +832,7 @@ class OverlayService : Service() {
           // 这句最要紧的话就被 tick 覆写成「引擎离线」——用户正要作答的提示被抹掉。
           // 判据统一：有更具体的话要说（完成态 / 待答态）时，本处一律让位给分支链。
           if (completionLabel().isEmpty() && pendingKind.isEmpty()) {
-            panel.statusText?.let { ShimmerTextView::class.java.cast(it).setShimmering(false); it.setTextColor(0xFFE04848.toInt()); it.text = UiText.t(this@OverlayService, "引擎离线", "Engine offline") }
+            panel.statusText?.let { ShimmerTextView::class.java.cast(it).setShimmering(false); it.setTextColor(0xFFE04848.toInt()); it.text = UiText.t(this@OverlayService, "引擎离线", "Engine offline", "Motor sin conexión") }
           }
         }
       }
@@ -902,15 +902,15 @@ class OverlayService : Service() {
     // 注释此前就写着「不再静默 return」，而代码里这一行一直在静默返回（P0-6 复核发现：
     // 注释说的修法与代码不一致）。按钮现已按忙态真正禁用，此支只剩「渲染与点击之间的竞态」，
     // 仍要给出可见回执——用户视角里「点了没反应」正是这样产生的。
-    if (!sessionBusy) { flashStatus(t("当前没有正在运行的任务", "Nothing is running right now")); return }
-    if (!engineRunning) { flashStatus(t("引擎离线，无法停止", "Engine is offline; cannot stop")); return }
-    if (activeSessionId.isEmpty()) { flashStatus(t("无活动会话", "No active session")); return }
+    if (!sessionBusy) { flashStatus(t("当前没有正在运行的任务", "Nothing is running right now", "No hay nada en ejecución ahora")); return }
+    if (!engineRunning) { flashStatus(t("引擎离线，无法停止", "Engine is offline; cannot stop", "Motor sin conexión; no se puede detener")); return }
+    if (activeSessionId.isEmpty()) { flashStatus(t("无活动会话", "No active session", "Sin sesión activa")); return }
     postRpc("session/cancel", JSONObject().put("request", JSONObject().put("sessionId", activeSessionId))) { code, body ->
       val reply = parseOverlayRpcAdmission(code, body, "session/cancel")
       when (reply.state) {
-        OverlayRpcAdmissionState.ACCEPTED -> flashStatus(t("停止请求已受理", "Stop request accepted"))
-        OverlayRpcAdmissionState.UNKNOWN -> flashStatus(t("停止结果未确认，请查看任务状态", "Stop outcome unknown; check task state"))
-        OverlayRpcAdmissionState.REJECTED -> flashStatus(t("停止失败：", "Stop failed: ") + reply.reason)
+        OverlayRpcAdmissionState.ACCEPTED -> flashStatus(t("停止请求已受理", "Stop request accepted", "Solicitud de detención aceptada"))
+        OverlayRpcAdmissionState.UNKNOWN -> flashStatus(t("停止结果未确认，请查看任务状态", "Stop outcome unknown; check task state", "Resultado de la detención sin confirmar; revisa el estado de la tarea"))
+        OverlayRpcAdmissionState.REJECTED -> flashStatus(t("停止失败：", "Stop failed: ", "Fallo al detener: ") + reply.reason)
       }
     }
   }
@@ -934,7 +934,7 @@ class OverlayService : Service() {
     onCreated: ((String) -> Unit)? = null,
   ) {
     if (pendingTextSend != null) {
-      val message = t("上一条发送结果未确认，草稿已保留；不会重复发送", "Previous send outcome unknown; draft kept, not resending")
+      val message = t("上一条发送结果未确认，草稿已保留；不会重复发送", "Previous send outcome unknown; draft kept, not resending", "Resultado del envío anterior sin confirmar; borrador conservado; no se reenviará")
       flashStatus(message)
       onUnknown?.invoke(message)
       recheckTextSendOutcome()
@@ -944,14 +944,14 @@ class OverlayService : Service() {
       val cachedDraft = cachedV2?.exportDraftSnapshot()
       if (cachedDraft?.sendPending == true || cachedDraft?.commandPending == true) {
         OverlayPageHost.recheckPendingActions()
-        val message = t("原悬浮操作尚未确认，草稿已保留；不会重复提交", "Original overlay action is unresolved; draft kept, not resubmitting")
+        val message = t("原悬浮操作尚未确认，草稿已保留；不会重复提交", "Original overlay action is unresolved; draft kept, not resubmitting", "La acción flotante anterior sigue sin confirmar; borrador conservado; no se reenviará")
         flashStatus(message)
         onUnknown?.invoke(message)
         return
       }
     }
     if (text.isEmpty()) { onResult?.invoke(false); return }
-    if (!engineRunning) { flashStatus(t("引擎离线", "Engine offline")); onResult?.invoke(false); return }
+    if (!engineRunning) { flashStatus(t("引擎离线", "Engine offline", "Motor sin conexión")); onResult?.invoke(false); return }
     // 草稿仅在明确受理后清空；HTTP200/超时本身都不是消息已受理的证据。
     val steer = sessionBusy   // 发送前的忙态决定模式与提示语（成功回调里已被乐观置忙覆盖）
     // #1042：requestId 是**幂等键**，一次用户发送只生成一次，create 与随后的 prompt 复用同一个。
@@ -985,14 +985,14 @@ class OverlayService : Service() {
           // 原本显示「空闲」，实测被用户点名（2026-09-05）；45s 无 live 确认由探活兜底回退。
           if (activeSessionId == targetSessionId) markBusyOptimistic()
           if (activeSessionId == targetSessionId && panel.inputBox?.text?.toString()?.trim() == text) panel.inputBox?.setText("")
-          flashStatus(if (steer) t("已插话", "Interjected") else t("已发送", "Sent"))
+          flashStatus(if (steer) t("已插话", "Interjected", "Mensaje intercalado") else t("已发送", "Sent", "Enviado"))
           finishTextSend(pending, true)
         } else if (reply.state == OverlayRpcAdmissionState.UNKNOWN) {
           reportTextSendUnknown(pending)
         } else {
           // 发送失败：只在用户没动过输入框时回填（避免「以为发出去了」——#4；避免覆盖新输入——#1043）
-          if (pending.onResult == null) restoreAfterFailure(text, t("发送失败：", "Send failed: ") + reply.reason)
-          else flashStatus(t("发送失败，草稿已保留：", "Send failed; draft kept: ") + reply.reason)
+          if (pending.onResult == null) restoreAfterFailure(text, t("发送失败：", "Send failed: ", "Envío fallido: ") + reply.reason)
+          else flashStatus(t("发送失败，草稿已保留：", "Send failed; draft kept: ", "Envío fallido; borrador conservado: ") + reply.reason)
           finishTextSend(pending, false)
         }
       }
@@ -1026,15 +1026,15 @@ class OverlayService : Service() {
           } else if (reply.state == OverlayRpcAdmissionState.UNKNOWN) {
             reportTextSendUnknown(pending)
           } else {
-            if (pending.onResult == null) restoreAfterFailure(text, t("建会话失败：", "Could not create session: ") + reply.reason)
-            else flashStatus(t("建会话失败，草稿已保留", "Could not create session; draft kept"))
+            if (pending.onResult == null) restoreAfterFailure(text, t("建会话失败：", "Could not create session: ", "No se pudo crear la sesión: ") + reply.reason)
+            else flashStatus(t("建会话失败，草稿已保留", "Could not create session; draft kept", "No se pudo crear la sesión; borrador conservado"))
             finishTextSend(pending, false)
           }
         } else if (reply.state == OverlayRpcAdmissionState.UNKNOWN) {
           reportTextSendUnknown(pending)
         } else {
-          if (pending.onResult == null) restoreAfterFailure(text, t("建会话失败：", "Could not create session: ") + reply.reason)
-          else flashStatus(t("建会话失败，草稿已保留：", "Could not create session; draft kept: ") + reply.reason)
+          if (pending.onResult == null) restoreAfterFailure(text, t("建会话失败：", "Could not create session: ", "No se pudo crear la sesión: ") + reply.reason)
+          else flashStatus(t("建会话失败，草稿已保留：", "Could not create session; draft kept: ", "No se pudo crear la sesión; borrador conservado: ") + reply.reason)
           finishTextSend(pending, false)
         }
       }
@@ -1075,16 +1075,16 @@ class OverlayService : Service() {
     if (pendingTextSend !== pending) return
     // 受理证据不证明此刻仍忙，不得重启已结束任务的乐观忙态。
     if (activeSessionId == pending.sessionId && panel.inputBox?.text?.toString()?.trim() == pending.text) panel.inputBox?.setText("")
-    flashStatus(t("已确认原消息已受理，未重复发送", "Original message acceptance confirmed; not resent"))
+    flashStatus(t("已确认原消息已受理，未重复发送", "Original message acceptance confirmed; not resent", "Aceptación del mensaje original confirmada; no se reenvió"))
     finishTextSend(pending, true)
   }
 
   private fun reportTextSendUnknown(pending: PendingOverlayTextSend) {
     pending.unknown = true
     val message = if (pending.phase == "session/create") {
-      t("建会话结果未确认，草稿已保留；请在主界面核对，不会重复建会话", "Session creation outcome unknown; draft kept. Check the main app; not creating again")
+      t("建会话结果未确认，草稿已保留；请在主界面核对，不会重复建会话", "Session creation outcome unknown; draft kept. Check the main app; not creating again", "Resultado de crear sesión sin confirmar; borrador conservado. Verifica en la app principal; no se creará de nuevo")
     } else {
-      t("发送结果未确认，草稿已保留；再次发送只查询原结果", "Send outcome unknown; draft kept. Send again only checks the original outcome")
+      t("发送结果未确认，草稿已保留；再次发送只查询原结果", "Send outcome unknown; draft kept. Send again only checks the original outcome", "Resultado del envío sin confirmar; borrador conservado. Reenviar solo consulta el resultado original")
     }
     flashStatus(message)
     pending.onUnknown?.invoke(message)
@@ -1140,7 +1140,7 @@ class OverlayService : Service() {
 
   /** 面板状态行短暂提示（发送/停止结果）。 */
   // 面板状态行文案走双语（与 OverlayPanel 同一入口；切英文后这些提示此前仍是中文）。
-  private fun t(zh: String, en: String): String = UiText.t(this, zh, en)
+  private fun t(zh: String, en: String, es: String? = null): String = UiText.t(this, zh, en, es)
 
   internal fun flashStatus(msg: String) {
     // v2 没有旧面板状态行：状态提示改走 Toast（卡片/输入区都可能不可见，Toast 总是可见）。
@@ -1196,7 +1196,7 @@ class OverlayService : Service() {
       // S2-2：失败不得只写日志（用户按了三下，什么都没发生）。面板此刻必然是展开态
       // （该手势挂在展开面板的状态行上），故 flashStatus 一定可见。
       LogCollector.log("dsh-overlay", "jump to app failed: " + (e.message ?: e.javaClass.simpleName))
-      flashStatus(t("跳转失败，请手动切到 DSH", "Could not switch; open DSH manually"))
+      flashStatus(t("跳转失败，请手动切到 DSH", "Could not switch; open DSH manually", "No se pudo cambiar; abre DSH manualmente"))
     }
   }
 
@@ -1319,7 +1319,7 @@ class OverlayService : Service() {
       expanded = false
       panelParams = null
       unit.visibility = View.GONE
-      flashStatus(t("无法打开作答卡片", "Could not open the answer card"))
+      flashStatus(t("无法打开作答卡片", "Could not open the answer card", "No se pudo abrir la tarjeta de respuesta"))
       return
     }
     panel.updateBallOnly()

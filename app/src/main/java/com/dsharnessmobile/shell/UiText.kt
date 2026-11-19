@@ -14,8 +14,17 @@ internal object UiText {
   /** True when the English locale is active; an absent context keeps Chinese. */
   fun isEnglish(context: Context?): Boolean = context != null && AppLanguage.dshLocale(context) == AppLanguage.MODE_EN
 
-  /** Pick the copy for the active locale. */
-  fun t(context: Context?, zh: String, en: String): String = t(isEnglish(context), zh, en)
+  /**
+   * Pick the copy for the active locale.
+   *
+   * The optional Spanish copy is honored only when `es` is provided AND the active
+   * dsh locale is Spanish; every other locale keeps the zh/en pair untouched, so
+   * existing two-language call sites behave exactly as before.
+   */
+  fun t(context: Context?, zh: String, en: String, es: String? = null): String {
+    if (es != null && context != null && AppLanguage.dshLocale(context) == AppLanguage.MODE_ES) return es
+    return t(isEnglish(context), zh, en)
+  }
 
   /**
    * Same table, locale already resolved.

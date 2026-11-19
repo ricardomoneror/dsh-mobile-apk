@@ -20,9 +20,11 @@ export type VdOp = (typeof VD_OPS)[number]
  *
  * 面板只跑在 WebView 里，但仍按「无 DOM 时不抛」写，方便 node 单测直接导入。
  */
-function tr(zh: string, en: string): string {
+function tr(zh: string, en: string, es?: string): string {
   try {
-    return document.documentElement.lang.toLowerCase().startsWith('en') ? en : zh
+    const lang = document.documentElement.lang.toLowerCase()
+    if (es !== undefined && lang.startsWith('es')) return es
+    return lang.startsWith('en') ? en : zh
   } catch {
     return zh
   }
@@ -100,7 +102,7 @@ export function mapStatusPayload(payload: unknown): VdPanelState {
   if (payload === null || typeof payload !== 'object') {
     return {
       state: 'blocked', code: VD_STATUS_UNAVAILABLE,
-      detail: tr('状态源返回体不是对象（fail-closed）。', 'Status payload did not return an object (fail-closed).'),
+      detail: tr('状态源返回体不是对象（fail-closed）。', 'Status payload did not return an object (fail-closed).', 'El cuerpo devuelto por la fuente de estado no es un objeto (fail-closed).'),
       ops: [], screens: [], viewers: [],
     }
   }

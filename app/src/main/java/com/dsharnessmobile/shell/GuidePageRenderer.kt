@@ -281,13 +281,13 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
           result == null -> ""
           skipped.isNotEmpty() -> ""
           result.optString("reason") == "repair-result-unknown" ->
-            UiText.t(activity, "属主维护结果仍不明，请稍候。", "Ownership maintenance is still unresolved; please wait.")
+            UiText.t(activity, "属主维护结果仍不明，请稍候。", "Ownership maintenance is still unresolved; please wait.", "El mantenimiento de propiedad sigue sin resolverse; espera.")
           !result.optBoolean("ok") -> UiText.t(activity,
             "属主维护未完成（修复 $healed / 失败 $failures），请导出日志后重试。",
-            "Ownership maintenance incomplete (fixed $healed, failed $failures). Export the log and retry.")
+            "Ownership maintenance incomplete (fixed $healed, failed $failures). Export the log and retry.", "Mantenimiento de propiedad incompleto ($healed reparados, $failures fallidos). Exporta el log y reintenta.")
           healed > 0 -> UiText.t(activity,
             "已自动修复 $healed 个属主条目，请重试启动。",
-            "Fixed $healed ownership entries automatically; retry startup.")
+            "Fixed $healed ownership entries automatically; retry startup.", "Se repararon $healed entradas de propiedad automáticamente; reintenta el arranque.")
           else -> ""
         }
         if (text.isNotEmpty() && lastGuidePhase == GuidePhase.Error && startupOwnershipRepairAllowed)
@@ -309,21 +309,21 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
     val terminationNote = if (unproven) {
       UiText.t(activity,
         "\n\n注意：这条记录可能仍有已派发的特权工作。若之后出现异常，请重启设备。",
-        "\n\nNote: this record may still have dispatched privileged work. Restart the device if problems follow.")
+        "\n\nNote: this record may still have dispatched privileged work. Restart the device if problems follow.", "\n\nAtención: este registro aún puede tener trabajo privilegiado despachado. Si luego aparecen problemas, reinicia el equipo.")
     } else {
       ""
     }
     runCatching {
       android.app.AlertDialog.Builder(activity)
-        .setTitle(UiText.t(activity, "维护隔离尚未结算", "Maintenance lease not settled"))
+        .setTitle(UiText.t(activity, "维护隔离尚未结算", "Maintenance lease not settled", "Aislamiento de mantenimiento sin liquidar"))
         .setMessage(
           (pending?.optString("guidance").orEmpty().ifBlank {
             UiText.t(activity, "已有特权工作尚未结算，暂不修改运行时。",
-              "Privileged work is not settled; the runtime stays untouched.")
+              "Privileged work is not settled; the runtime stays untouched.", "Hay trabajo privilegiado aún sin liquidar; por ahora no se modifica el runtime.")
           }) +
             UiText.t(activity,
               "\n\n若那条 root 通道确实已不存在，可清除隔离后重试；这不会改动文件属主。",
-              "\n\nIf that root channel is gone, clear the lease and retry; file ownership is untouched.") +
+              "\n\nIf that root channel is gone, clear the lease and retry; file ownership is untouched.", "\n\nSi ese canal root ya no existe, puedes liberar el aislamiento y reintentar; la propiedad de los archivos no cambia.") +
             terminationNote,
         )
         .setPositiveButton("清除隔离并重试") { _, _ ->
@@ -333,8 +333,8 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
             pushHint(
               if (unproven) UiText.t(activity,
                 "已清除隔离，正在重试（可能有已派发工作；若异常请重启设备）。",
-                "Lease cleared; retrying (dispatched work may remain; restart the device if needed).")
-              else UiText.t(activity, "已清除隔离，正在重试启动。", "Lease cleared; retrying startup."),
+                "Lease cleared; retrying (dispatched work may remain; restart the device if needed).", "Aislamiento liberado; reintentando (puede quedar trabajo despachado; si hay problemas reinicia el equipo).")
+              else UiText.t(activity, "已清除隔离，正在重试启动。", "Lease cleared; retrying startup.", "Aislamiento liberado; reintentando el arranque."),
               HintSource.PHASE, sticky = unproven,
             )
             activity.engineFlow.engineRetryCount = 0
@@ -345,16 +345,16 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
           } else {
             pushHint(
               result.optString("guidance").ifBlank {
-                UiText.t(activity, "清除未成功，请重试或重启设备。", "Clear failed; retry or restart the device.")
+                UiText.t(activity, "清除未成功，请重试或重启设备。", "Clear failed; retry or restart the device.", "La limpieza no se completó; reintenta o reinicia el equipo.")
               },
               HintSource.PHASE, sticky = true,
             )
           }
         }
-        .setNegativeButton(UiText.t(activity, "取消", "Cancel"), null)
+        .setNegativeButton(UiText.t(activity, "取消", "Cancel", "Cancelar"), null)
         .show()
     }.onFailure {
-      applyGuideHint(UiText.t(activity, "无法弹出确认框：", "Could not open the dialog: ") + it.javaClass.simpleName)
+      applyGuideHint(UiText.t(activity, "无法弹出确认框：", "Could not open the dialog: ", "No se pudo abrir el cuadro de confirmación: ") + it.javaClass.simpleName)
     }
   }
 
@@ -468,7 +468,7 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
     chrome.primaryButton.alpha = if (locked) 0.55f else 1f
     chrome.primaryButton.text = when {
       leasePending -> activity.getString(R.string.ds_clear_isolation)
-      phase == GuidePhase.Stopping -> UiText.t(activity, "正在关闭", "Stopping")
+      phase == GuidePhase.Stopping -> UiText.t(activity, "正在关闭", "Stopping", "Cerrando")
       phase == GuidePhase.Closed -> activity.getString(R.string.ds_restart)
       startupRetryAction -> activity.getString(R.string.ds_start_retry)
       phase == GuidePhase.Recovering -> activity.getString(R.string.ds_recovering)
@@ -668,9 +668,9 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
 
   /** Stage phrases stay a single list for the rotation test; the copy is translated here. */
   private fun localizedStagePhrase(zh: String): String = when (zh) {
-    RUNTIME_STAGE_PHRASES[0] -> UiText.t(activity, zh, "Extracting the runtime…")
-    RUNTIME_STAGE_PHRASES[1] -> UiText.t(activity, zh, "Clearing leftover data…")
-    else -> UiText.t(activity, zh, "Preparing the runtime…")
+    RUNTIME_STAGE_PHRASES[0] -> UiText.t(activity, zh, "Extracting the runtime…", "Extrayendo el runtime…")
+    RUNTIME_STAGE_PHRASES[1] -> UiText.t(activity, zh, "Clearing leftover data…", "Limpiando datos residuales…")
+    else -> UiText.t(activity, zh, "Preparing the runtime…", "Preparando el runtime…")
   }
 
   /** 相位切走/流程重跑时复位轮换，使下一次重新显示第一句并重新起算时间窗。 */
@@ -683,20 +683,20 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
   }
 
   private fun defaultHint(phase: GuidePhase): String = when (phase) {
-    GuidePhase.Stopping -> UiText.t(activity, "正在释放 Linux 终端和后台任务，文件会保留。", "Releasing Linux terminals and background tasks; files are kept.")
-    GuidePhase.Starting -> UiText.t(activity, "首次启动会解压运行时，请保持前台。", "First start unpacks the runtime; stay in the app.")
+    GuidePhase.Stopping -> UiText.t(activity, "正在释放 Linux 终端和后台任务，文件会保留。", "Releasing Linux terminals and background tasks; files are kept.", "Liberando terminales Linux y tareas en segundo plano; los archivos se conservan.")
+    GuidePhase.Starting -> UiText.t(activity, "首次启动会解压运行时，请保持前台。", "First start unpacks the runtime; stay in the app.", "El primer inicio descomprime el runtime; mantén la app en primer plano.")
     GuidePhase.Extracting -> extractHintBody()
     // 0.14.6：这句只允许出现在**引擎快照更新**相位。APK 自更新路径不再把相位设成 Updating
     // （更新动作只占用次级提示/次级按钮，不占用主按钮与状态行），故此处不会误导成「在更新应用」。
-    GuidePhase.Updating -> UiText.t(activity, "正在检查运行时更新。", "Checking for a runtime update.")
-    GuidePhase.Recovering -> UiText.t(activity, "正在自动恢复引擎，通常几秒。", "Recovering the engine; usually a few seconds.")
-    GuidePhase.Undoing -> UiText.t(activity, "正在回滚到上个良好快照。", "Rolling back to the last good snapshot.")
+    GuidePhase.Updating -> UiText.t(activity, "正在检查运行时更新。", "Checking for a runtime update.", "Revisando actualización del runtime.")
+    GuidePhase.Recovering -> UiText.t(activity, "正在自动恢复引擎，通常几秒。", "Recovering the engine; usually a few seconds.", "Recuperando el motor; suele tardar unos segundos.")
+    GuidePhase.Undoing -> UiText.t(activity, "正在回滚到上个良好快照。", "Rolling back to the last good snapshot.", "Revirtiendo a la última instantánea en buen estado.")
     // 缺陷 D（fx-2）：失败页的默认副文案要说清「这个按钮现在做什么」——
     // 旧文案只提「重试」，而按钮此刻已被改成安全模式入口（文案与事实必须对齐）。
     GuidePhase.Error -> startupFailureHint(activity, activity.engineManager.lastStartRefusalCode)
-    GuidePhase.Closed -> UiText.t(activity, "引擎已停止，不会自动恢复。", "Engine stopped; it will not restart by itself.")
-    GuidePhase.Idle -> UiText.t(activity, "引擎就绪后将进入 ", "When ready, the app opens ") + UserCopy.APP_NAME + UiText.t(activity, "。", ".")
-    GuidePhase.Info -> UiText.t(activity, "运行时随 APK 一起更新。", "The runtime updates with the APK.")
+    GuidePhase.Closed -> UiText.t(activity, "引擎已停止，不会自动恢复。", "Engine stopped; it will not restart by itself.", "Motor detenido; no se reactivará solo.")
+    GuidePhase.Idle -> UiText.t(activity, "引擎就绪后将进入 ", "When ready, the app opens ", "Cuando el motor esté listo, entrará a ") + UserCopy.APP_NAME + UiText.t(activity, "。", ".", ".")
+    GuidePhase.Info -> UiText.t(activity, "运行时随 APK 一起更新。", "The runtime updates with the APK.", "El runtime se actualiza junto con el APK.")
   }
 
   /**
@@ -710,7 +710,7 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
     UiText.t(
       activity,
       "正在解压运行时，需数分钟，请勿关闭。",
-      "Unpacking the runtime; this takes a few minutes. Keep the app open.",
+      "Unpacking the runtime; this takes a few minutes. Keep the app open.", "Descomprimiendo el runtime; toma unos minutos; no cierres la app."
     )
 
   /** 动效开关订阅的注销句柄；当前是否应脉冲由 [statusPulseWanted] 记住。 */
@@ -1007,7 +1007,7 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
       ApkUpdateState.STATE_FAILED -> {
         // 失败原因**原样**展示：翻译或截断都会把「哪一步坏了、下一步做什么」这两条信息弄丢，
         // 而这些原因本来就是给人看的（分类说明由控制器落盘，这里不二次加工）。
-        setApkStatus(activity.apkUpdate.reason() ?: UiText.t(activity, "检查更新未完成——可重试，或复制日志反馈", "The update check did not finish. Retry, or copy the log and report it."))
+        setApkStatus(activity.apkUpdate.reason() ?: UiText.t(activity, "检查更新未完成——可重试，或复制日志反馈", "The update check did not finish. Retry, or copy the log and report it.", "La revisión de actualizaciones no terminó; puedes reintentar, o copiar el log para reportarlo"))
         setCheckButton(check, enabled = true)
         // 只有手里还攥着一个已下载校验过的包时，失败态才有第二个动作可给（重试安装）；
         // 否则「下载」按下去也算不出该做什么，绝不摆一枚点了没反应的按钮。
@@ -1144,7 +1144,7 @@ internal class GuidePageRenderer(private val activity: MainActivity) {
     val crash = activity.crashInfo
     if (crash != null) {
       crashBanner.visibility = View.VISIBLE
-      crashBanner.text = UiText.t(activity, "上次异常退出：", "Last crash: ") + crash
+      crashBanner.text = UiText.t(activity, "上次异常退出：", "Last crash: ", "Último cierre anormal: ") + crash
     } else {
       crashBanner.visibility = View.GONE
     }

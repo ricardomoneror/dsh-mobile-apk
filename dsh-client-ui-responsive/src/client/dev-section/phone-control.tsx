@@ -151,51 +151,51 @@ type PhoneControlView = 'home' | 'a11y' | 'shizuku' | 'vdisplay' | 'advanced' | 
 
 function vdisplayStateLabel(state: VdisplayState): string {
   switch (state) {
-    case 'disabled': return tr('已关闭', 'Off')
-    case 'blocked': return tr('需要准备', 'Needs setup')
-    case 'ready': return tr('可创建', 'Ready')
-    default: return tr('已激活', 'Active')
+    case 'disabled': return tr('已关闭', 'Off', 'Apagado')
+    case 'blocked': return tr('需要准备', 'Needs setup', 'Requiere preparación')
+    case 'ready': return tr('可创建', 'Ready', 'Listo para crear')
+    default: return tr('已激活', 'Active', 'Activado')
   }
 }
 
 function scopeLabel(scope: ScreenScope): string {
   switch (scope) {
-    case 'virtual-only': return tr('仅虚拟屏幕', 'Virtual only')
-    case 'real-only': return tr('仅真实屏幕', 'Real only')
-    default: return tr('全部开放', 'All screens')
+    case 'virtual-only': return tr('仅虚拟屏幕', 'Virtual only', 'Solo pantallas virtuales')
+    case 'real-only': return tr('仅真实屏幕', 'Real only', 'Solo pantalla real')
+    default: return tr('全部开放', 'All screens', 'Todas las pantallas')
   }
 }
 
 function scopeSentence(scope: ScreenScope): string {
   switch (scope) {
-    case 'virtual-only': return tr('仅虚拟屏幕对模型开放，真实屏幕不可读、不可控。', 'Only virtual screens are open; the real screen cannot be read or controlled.')
-    case 'real-only': return tr('仅真实屏幕对模型开放，虚拟屏不可读、不可控。', 'Only the real screen is open; virtual screens cannot be read or controlled.')
-    default: return tr('虚拟屏幕与真实屏幕都可被模型读取和控制。', 'Both virtual and real screens can be read and controlled.')
+    case 'virtual-only': return tr('仅虚拟屏幕对模型开放，真实屏幕不可读、不可控。', 'Only virtual screens are open; the real screen cannot be read or controlled.', 'Solo las pantallas virtuales están abiertas al modelo; la pantalla real no se puede leer ni controlar.')
+    case 'real-only': return tr('仅真实屏幕对模型开放，虚拟屏不可读、不可控。', 'Only the real screen is open; virtual screens cannot be read or controlled.', 'Solo la pantalla real está abierta al modelo; las pantallas virtuales no se pueden leer ni controlar.')
+    default: return tr('虚拟屏幕与真实屏幕都可被模型读取和控制。', 'Both virtual and real screens can be read and controlled.', 'El modelo puede leer y controlar tanto las pantallas virtuales como la real.')
   }
 }
 
 function a11yRowState(status: A11yStatus): string {
-  if (!status.readable) return tr('状态不可读', 'Unreadable')
-  if (status.enabled) return tr('已开启', 'On')
-  return status.restrictedSettingsApplies ? tr('需解锁受限设置', 'Restricted settings') : tr('未开启', 'Off')
+  if (!status.readable) return tr('状态不可读', 'Unreadable', 'Estado ilegible')
+  if (status.enabled) return tr('已开启', 'On', 'Activado')
+  return status.restrictedSettingsApplies ? tr('需解锁受限设置', 'Restricted settings', 'Requiere desbloquear ajustes restringidos') : tr('未开启', 'Off', 'Apagado')
 }
 
 function rootRowState(status: RootGrantStatus, access: RootAccessStatus): string {
-  if (!status.readable) return tr('状态不可读', 'Unreadable')
-  if (status.granted) return tr('AI 已开启', 'Model on')
+  if (!status.readable) return tr('状态不可读', 'Unreadable', 'Estado ilegible')
+  if (status.granted) return tr('AI 已开启', 'Model on', 'IA activada')
   if (!status.channelRoot && !status.rootGranted) {
-    return access.readable && !access.suExists ? tr('本机不可用', 'Unavailable') : tr('需授权', 'Needs grant')
+    return access.readable && !access.suExists ? tr('本机不可用', 'Unavailable', 'No disponible') : tr('需授权', 'Needs grant', 'Requiere autorización')
   }
-  return tr('AI 未开启', 'Model off')
+  return tr('AI 未开启', 'Model off', 'IA desactivada')
 }
 
 function shizukuRowHint(status: ShizukuStatus): string {
-  if (!status.readable) return tr('状态不可读；进入查看可用的操作。', 'Status unreadable. Open for available actions.')
-  if (!status.installed) return tr('未安装；进入可下载 Shizuku。', 'Not installed. Open to download Shizuku.')
-  if (!status.running) return tr('已安装但未启动；进入可打开 Shizuku。', 'Installed but not running. Open to start it.')
-  if (!status.granted) return tr('已启动但未授权；进入可发起官方授权请求。', 'Running but not granted. Open to request access.')
-  if (status.bound) return tr('特权通道已就绪。', 'The privileged channel is ready.')
-  return tr('已授权，通道仍在建立。', 'Granted; the channel is still connecting.')
+  if (!status.readable) return tr('状态不可读；进入查看可用的操作。', 'Status unreadable. Open for available actions.', 'Estado ilegible. Abre para ver las acciones disponibles.')
+  if (!status.installed) return tr('未安装；进入可下载 Shizuku。', 'Not installed. Open to download Shizuku.', 'No está instalado. Abre para descargar Shizuku.')
+  if (!status.running) return tr('已安装但未启动；进入可打开 Shizuku。', 'Installed but not running. Open to start it.', 'Instalado pero sin iniciar. Abre para iniciar Shizuku.')
+  if (!status.granted) return tr('已启动但未授权；进入可发起官方授权请求。', 'Running but not granted. Open to request access.', 'Iniciado pero sin autorizar. Abre para pedir la autorización oficial.')
+  if (status.bound) return tr('特权通道已就绪。', 'The privileged channel is ready.', 'El canal privilegiado está listo.')
+  return tr('已授权，通道仍在建立。', 'Granted; the channel is still connecting.', 'Autorizado; el canal sigue conectándose.')
 }
 
 function vdisplayIsReadable(status: VdisplayStatus): boolean {
@@ -203,15 +203,15 @@ function vdisplayIsReadable(status: VdisplayStatus): boolean {
 }
 
 function rootHomeHint(status: RootGrantStatus, access: RootAccessStatus): string {
-  if (!status.readable) return tr('状态不可读；进入查看授权与风险说明。', 'Status unreadable. Open for grant and risk details.')
-  if (status.granted) return tr('AI 已获得 root 执行权限；进入可随时收回。', 'The model can use root. Open to revoke it at any time.')
+  if (!status.readable) return tr('状态不可读；进入查看授权与风险说明。', 'Status unreadable. Open for grant and risk details.', 'Estado ilegible. Abre para ver los detalles de autorización y riesgos.')
+  if (status.granted) return tr('AI 已获得 root 执行权限；进入可随时收回。', 'The model can use root. Open to revoke it at any time.', 'La IA puede usar root. Abre para revocarlo cuando quieras.')
   if (!status.channelRoot && !status.rootGranted) {
     return access.readable && !access.suExists
-      ? tr('本机不可用；进入查看授权说明。', 'Unavailable on this device. Open for grant details.')
-      : tr('未检测到可用 root 通道；进入查看授权说明。', 'No usable root channel. Open for grant details.')
+      ? tr('本机不可用；进入查看授权说明。', 'Unavailable on this device. Open for grant details.', 'No disponible en este equipo. Abre para ver los detalles de autorización.')
+      : tr('未检测到可用 root 通道；进入查看授权说明。', 'No usable root channel. Open for grant details.', 'No hay canal root utilizable. Abre para ver los detalles de autorización.')
   }
-  if (!status.consentValid) return tr('需阅读风险说明并确认后才能开启。', 'Read and accept the risk notice before turning this on.')
-  return tr('当前未开启；进入可授权。', 'Currently off. Open to grant access.')
+  if (!status.consentValid) return tr('需阅读风险说明并确认后才能开启。', 'Read and accept the risk notice before turning this on.', 'Lee y acepta el aviso de riesgos antes de poder activarlo.')
+  return tr('当前未开启；进入可授权。', 'Currently off. Open to grant access.', 'Actualmente apagado. Abre para autorizar.')
 }
 
 /** The one explicit Shizuku action for the current fact set; never requested automatically. */
@@ -318,27 +318,27 @@ export function describeOwnershipRepair(state: RootOwnershipStatus): { ok: boole
   if (!state.readable || state.startedAt === 0) return undefined
   if (state.running) return { ok: state.overdue ? false : undefined,
     text: state.overdue
-      ? tr('特权工作结果仍不明，已暂停新派发和维护；不要重复操作。无法确认 helper 结算时请重启设备（仅重启应用不算结算）。', 'The privileged task result is still unknown; new work is paused. If the helper never settles, reboot the device.')
+      ? tr('特权工作结果仍不明，已暂停新派发和维护；不要重复操作。无法确认 helper 结算时请重启设备（仅重启应用不算结算）。', 'The privileged task result is still unknown; new work is paused. If the helper never settles, reboot the device.', 'El resultado de la tarea privilegiada sigue sin saberse; se pausaron los nuevos despachos y el mantenimiento. No repitas la operación. Si el helper nunca liquida, reinicia el equipo (reiniciar solo la app no cuenta como liquidación).')
       : state.operation !== undefined && !state.operation.includes('ownership')
-        ? tr('正在等待已有特权工作结算，尚未开始文件属主维护。', 'Waiting for another privileged task to settle before the ownership check starts.')
-        : tr('属主维护进行中，正在有界检查本应用数据目录；结果会自动刷新。', 'File ownership repair is running a bounded check; the result refreshes on its own.') }
+        ? tr('正在等待已有特权工作结算，尚未开始文件属主维护。', 'Waiting for another privileged task to settle before the ownership check starts.', 'Esperando que otra tarea privilegiada liquide antes de partir con el mantenimiento de propietarios de archivos.')
+        : tr('属主维护进行中，正在有界检查本应用数据目录；结果会自动刷新。', 'File ownership repair is running a bounded check; the result refreshes on its own.', 'El mantenimiento de propietarios está en marcha, revisando con tope la carpeta de datos de esta app; el resultado se refresca solo.') }
   const result = state.result
-  if (result === undefined) return { ok: false, text: tr('属主维护结果不可读，不能确认修复完成；请复制诊断日志。', 'The ownership result is unreadable, so the repair is unconfirmed. Copy the diagnostics.') }
-  if (result.skipped === 'no-root-path') return { ok: true, text: tr('当前没有可用 root 修复路径，未执行属主变更。', 'No root repair path is available, so ownership was left unchanged.') }
+  if (result === undefined) return { ok: false, text: tr('属主维护结果不可读，不能确认修复完成；请复制诊断日志。', 'The ownership result is unreadable, so the repair is unconfirmed. Copy the diagnostics.', 'El resultado del mantenimiento de propietarios es ilegible; no se puede confirmar que la reparación terminó. Copia el registro de diagnóstico.') }
+  if (result.skipped === 'no-root-path') return { ok: true, text: tr('当前没有可用 root 修复路径，未执行属主变更。', 'No root repair path is available, so ownership was left unchanged.', 'No hay ruta de reparación root disponible; no se cambió ningún propietario.') }
   const count = (key: string): string => typeof result[key] === 'number' && Number.isFinite(result[key])
-    && (result[key] as number) >= 0 ? String(result[key]) : tr('未知', 'unknown')
+    && (result[key] as number) >= 0 ? String(result[key]) : tr('未知', 'unknown', 'desconocido')
   const counts = tr(
     '检查 ' + count('checked') + ' 项 / 修复 ' + count('healed') + ' 项 / 失败 ' + count('failures') + ' 项',
-    count('checked') + ' checked / ' + count('healed') + ' repaired / ' + count('failures') + ' failed',
+    count('checked') + ' checked / ' + count('healed') + ' repaired / ' + count('failures') + ' failed', count('checked') + ' comprobados / ' + count('healed') + ' reparados / ' + count('failures') + ' fallidos',
   )
   const completeCounts = ['checked', 'healed'].every(key => typeof result[key] === 'number'
     && Number.isSafeInteger(result[key]) && (result[key] as number) >= 0)
   if (result.ok === true && completeCounts && result.truncated === false && result.deadlineExceeded === false
     && result.remaining === 0 && result.unverifiedMutations === 0 && result.failures === 0) {
-    return { ok: true, text: tr('文件属主维护完成（' + counts + '）；未进行 SELinux 重标记。', 'File ownership repair finished (' + counts + '); no SELinux relabel was done.') }
+    return { ok: true, text: tr('文件属主维护完成（' + counts + '）；未进行 SELinux 重标记。', 'File ownership repair finished (' + counts + '); no SELinux relabel was done.', 'Reparación de propietarios de archivos terminada (' + counts + '); no se reetiquetó SELinux.') }
   }
   const reason = typeof result.reason === 'string' ? result.reason : typeof result.code === 'string' ? result.code : undefined
-  return { ok: false, text: tr('文件属主维护未完成（' + counts + '）：', 'File ownership repair did not finish (' + counts + '): ') + describeCallReason(reason) }
+  return { ok: false, text: tr('文件属主维护未完成（' + counts + '）：', 'File ownership repair did not finish (' + counts + '): ', 'La reparación de propietarios de archivos no terminó (' + counts + '): ') + describeCallReason(reason) }
 }
 
 const ROOT_ACCESS_UNREADABLE: RootAccessStatus = {
@@ -370,17 +370,17 @@ export const ROOT_GRANT_NOT_ROOT_TEXT = '无法在未 root 的设备上赋予该
  * （未安装 → 未启动 → 未授权 → 未绑定 → 就绪），用户据此知道自己在第几步。
  */
 export function shizukuStateLabel(status: ShizukuStatus): string {
-  if (!status.readable) return tr('状态不可读', 'Status unavailable')
-  if (!status.installed) return tr('未安装', 'Not installed')
-  if (!status.running) return tr('已安装，Shizuku 未启动', 'Installed, Shizuku not running')
-  if (!status.granted) return tr('已启动，尚未授权', 'Running, not granted')
+  if (!status.readable) return tr('状态不可读', 'Status unavailable', 'Estado no disponible')
+  if (!status.installed) return tr('未安装', 'Not installed', 'No instalado')
+  if (!status.running) return tr('已安装，Shizuku 未启动', 'Installed, Shizuku not running', 'Instalado, Shizuku sin iniciar')
+  if (!status.granted) return tr('已启动，尚未授权', 'Running, not granted', 'Iniciado, sin autorizar')
   if (!status.bound) {
-    if (status.binding) return tr('已授权，通道建立中', 'Granted, connecting')
+    if (status.binding) return tr('已授权，通道建立中', 'Granted, connecting', 'Autorizado, conectando')
     // issue #471：连续启动失败是一条独立的事实，不得继续被「通道未建立」一笔带过。
     if (status.startFailed === true) {
-      return tr('已授权，用户服务启动失败', 'Granted, UserService failed to start')
+      return tr('已授权，用户服务启动失败', 'Granted, UserService failed to start', 'Autorizado, UserService no partió')
     }
-    return tr('已授权，通道未建立', 'Granted, not connected')
+    return tr('已授权，通道未建立', 'Granted, not connected', 'Autorizado, canal sin conectar')
   }
   // issue #1476：`bound` 只证明 binder 代理活着。壳侧还会做一次**功能探测**
   // （`protocolVersion()` 真过 binder），结论在 readyState 上。只看 bound 就会复述
@@ -388,27 +388,27 @@ export function shizukuStateLabel(status: ShizukuStatus): string {
   //
   // 缺席（旧壳无这条判据）必须退回旧的 bound 口径，否则老壳永久显示探测中。
   if (status.readyState === 'not-ready') {
-    return tr('已授权，用户服务不可用', 'Granted, UserService not responding')
+    return tr('已授权，用户服务不可用', 'Granted, UserService not responding', 'Autorizado, UserService no responde')
   }
   if (status.readyState === 'unknown') {
-    return tr('已授权，正在验证通道', 'Granted, verifying the channel')
+    return tr('已授权，正在验证通道', 'Granted, verifying the channel', 'Autorizado, verificando el canal')
   }
-  return tr('通道就绪', 'Channel ready')
+  return tr('通道就绪', 'Channel ready', 'Canal listo')
 }
 
 /** 壳侧 guidance 缺失时的兜底说明（每态都能说清「下一步做什么」）。 */
 export function shizukuStepHint(status: ShizukuStatus): string {
-  if (!status.readable) return tr('读不到 Shizuku 状态：壳侧桥未装配或解析失败。', 'Cannot read Shizuku status: the app bridge is missing or the reply did not parse.')
-  if (!status.installed) return tr('点「下载 Shizuku」到发布页装好，再回来点「打开 Shizuku」。', 'Tap Download Shizuku, install it, then come back and tap Open Shizuku.')
-  if (!status.running) return tr('点「打开 Shizuku」，在应用内按提示用无线调试启动它（重启设备后需要重做一次）。', 'Tap Open Shizuku and start it there with wireless debugging; repeat after a reboot.')
-  if (!status.granted) return tr('点「打开 Shizuku」，在里面允许本应用使用 Shizuku——授权只能由你亲手完成。', 'Tap Open Shizuku and allow this app inside it; only you can grant this.')
+  if (!status.readable) return tr('读不到 Shizuku 状态：壳侧桥未装配或解析失败。', 'Cannot read Shizuku status: the app bridge is missing or the reply did not parse.', 'No se puede leer el estado de Shizuku: falta el puente de la app o la respuesta no se pudo parsear.')
+  if (!status.installed) return tr('点「下载 Shizuku」到发布页装好，再回来点「打开 Shizuku」。', 'Tap Download Shizuku, install it, then come back and tap Open Shizuku.', 'Toca «Descargar Shizuku», instala la versión release y vuelve a tocar «Abrir Shizuku».')
+  if (!status.running) return tr('点「打开 Shizuku」，在应用内按提示用无线调试启动它（重启设备后需要重做一次）。', 'Tap Open Shizuku and start it there with wireless debugging; repeat after a reboot.', 'Toca «Abrir Shizuku» e inícialo ahí con depuración inalámbrica siguiendo las indicaciones; tras reiniciar el equipo hay que repetirlo.')
+  if (!status.granted) return tr('点「打开 Shizuku」，在里面允许本应用使用 Shizuku——授权只能由你亲手完成。', 'Tap Open Shizuku and allow this app inside it; only you can grant this.', 'Toca «Abrir Shizuku» y permite esta app dentro de Shizuku; la autorización solo la puedes dar tú.')
   if (!status.bound && status.startFailed === true) {
     return tr(
       '用户服务连续启动失败，展开下方诊断日志查看真实原因。若使用 Shizuku 13.6.0，可降级到 13.5.4，或改用 ADB 通道。',
-      'The UserService keeps failing to start. Expand the startup log below. If you use Shizuku 13.6.0, downgrade to 13.5.4 or switch to the ADB channel.',
+      'The UserService keeps failing to start. Expand the startup log below. If you use Shizuku 13.6.0, downgrade to 13.5.4 or switch to the ADB channel.', 'El UserService falla una y otra vez al partir; despliega el registro de diagnóstico de abajo para ver el motivo real. Si usas Shizuku 13.6.0, baja a la 13.5.4 o cambia al canal ADB.',
     )
   }
-  if (!status.bound) return tr('状态每 2 秒自动刷新，稍等即可；一直停在这里可以点「打开 Shizuku」重进一次。', 'Status refreshes every 2 seconds; if it stays here, open Shizuku once more.')
+  if (!status.bound) return tr('状态每 2 秒自动刷新，稍等即可；一直停在这里可以点「打开 Shizuku」重进一次。', 'Status refreshes every 2 seconds; if it stays here, open Shizuku once more.', 'El estado se refresca cada 2 segundos; espera un poco. Si se queda aquí, toca «Abrir Shizuku» y entra otra vez.')
   // issue #1476：binder 连上了但功能探测失败——这时「已就绪」是假的，必须说清下一步。
   if (status.readyState === 'not-ready') {
     return tr(
@@ -416,16 +416,16 @@ export function shizukuStepHint(status: ShizukuStatus): string {
         '）。点「重置链接」重建通道；仍失败请展开诊断日志反馈。',
       'The channel is connected but the UserService does not answer (probe failed' +
         (status.probeError ? ': ' + status.probeError : '') +
-        '). Tap Reset link to rebuild; if it persists, expand the diagnostics and report it.',
+        '). Tap Reset link to rebuild; if it persists, expand the diagnostics and report it.', 'El canal está conectado, pero el UserService no responde (falló la prueba' + (status.probeError ? ': ' + status.probeError : '') + '). Toca «Restablecer enlace» para reconstruir el canal; si sigue fallando, despliega el diagnóstico y repórtalo.',
     )
   }
   if (status.readyState === 'unknown') {
     return tr(
       '通道已连上，正在做首次功能探测（这不代表不可用）；探测一落地即转就绪，现在就可以让 AI 试。',
-      'The channel is connected; the first functional probe is running (not a sign of trouble). It turns ready once the probe lands; you can let the AI try now.',
+      'The channel is connected; the first functional probe is running (not a sign of trouble). It turns ready once the probe lands; you can let the AI try now.', 'El canal está conectado; corre la primera prueba de funciones (no es señal de problema). En cuanto la prueba termine pasa a listo; ya puedes dejar que la IA pruebe.',
     )
   }
-  return tr('特权通道已就绪，虚拟屏与特权 shell 可以用了。', 'The privileged channel is ready; virtual screens and the privileged shell work now.')
+  return tr('特权通道已就绪，虚拟屏与特权 shell 可以用了。', 'The privileged channel is ready; virtual screens and the privileged shell work now.', 'El canal privilegiado está listo; ya funcionan las pantallas virtuales y el envoltorio privilegiado.')
 }
 
 export function parseRootReply(raw: string | undefined): Record<string, unknown> | undefined {
@@ -467,11 +467,11 @@ export function settleLinkCall(
 export function settleUnlockCall(raw: string | undefined): { ok: boolean; text: string } {
   const answer = parseAnswer(raw)
   if (answer?.ok === true) {
-    return { ok: true, text: answer.message ?? tr('已解锁受限设置，现在可以回系统页开启无障碍服务。', 'Restricted settings unlocked; go back to the system page and turn on accessibility.') }
+    return { ok: true, text: answer.message ?? tr('已解锁受限设置，现在可以回系统页开启无障碍服务。', 'Restricted settings unlocked; go back to the system page and turn on accessibility.', 'Ajustes restringidos desbloqueados; vuelve a la página del sistema y activa el servicio de accesibilidad.') }
   }
   return {
     ok: false,
-    text: tr('解锁失败：', 'Unlock failed: ') + (answer?.message ?? describeCallReason(answer?.reason)),
+    text: tr('解锁失败：', 'Unlock failed: ', 'Falló el desbloqueo: ') + (answer?.message ?? describeCallReason(answer?.reason)),
   }
 }
 
@@ -520,13 +520,13 @@ function readVdisplay(): VdisplayStatus {
       code: typeof parsed?.code === 'string' ? parsed.code : 'vdisplay-status-unavailable',
       guidance: typeof parsed?.guidance === 'string'
         ? parsed.guidance
-        : tr('虚拟屏状态暂不可读；不会把虚拟屏请求回退到真实屏幕。', 'Virtual screen status is unavailable; requests are not sent to the real screen.'),
+        : tr('虚拟屏状态暂不可读；不会把虚拟屏请求回退到真实屏幕。', 'Virtual screen status is unavailable; requests are not sent to the real screen.', 'El estado de la pantalla virtual no está disponible por ahora; las solicitudes de pantalla virtual no se enviarán a la pantalla real.'),
       ...(typeof parsed?.displayId === 'number' ? { displayId: parsed.displayId } : {}),
     }
   } catch {
     // P3-6：旧文案是「虚拟屏状态读取失败（fail-closed）。」——`fail-closed` 是内部策略词，
     // 对用户没有意义；这里说清「读不到 + 不会做什么 + 能做什么」，策略词只留在 code 里。
-    return { state: 'blocked', code: 'vdisplay-status-unavailable', guidance: tr('读不到虚拟屏状态：应用内桥未接好或解析失败。重新打开应用再试；读不到时不会把虚拟屏请求回退到真实屏幕。', 'Cannot read virtual screen status: the app bridge is missing or the reply did not parse. Requests are not sent to the real screen.') }
+    return { state: 'blocked', code: 'vdisplay-status-unavailable', guidance: tr('读不到虚拟屏状态：应用内桥未接好或解析失败。重新打开应用再试；读不到时不会把虚拟屏请求回退到真实屏幕。', 'Cannot read virtual screen status: the app bridge is missing or the reply did not parse. Requests are not sent to the real screen.', 'No se puede leer el estado de la pantalla virtual: el puente de la app no está conectado o la respuesta no se pudo parsear. Vuelve a abrir la app y reintenta; mientras no se lea, las solicitudes de pantalla virtual no se enviarán a la pantalla real.') }
   }
 }
 
@@ -660,14 +660,14 @@ export function readRootAccess(): RootAccessStatus {
 
 /** 应用级 root 授权状态 → 中文状态词（与壳侧 RootAccess 的状态常量一一对应）。 */
 export function rootAccessStateLabel(status: RootAccessStatus): string {
-  if (!status.readable) return tr('状态不可读', 'Status unavailable')
+  if (!status.readable) return tr('状态不可读', 'Status unavailable', 'Estado no disponible')
   switch (status.state) {
-    case 'granted': return tr('已授权（uid 0）', 'Granted (uid 0)')
-    case 'requesting': return tr('正在检测授权…', 'Checking the grant…')
-    case 'denied': return tr('已拒绝', 'Denied')
-    case 'timeout': return tr('检测超时，请在管理器确认后重试', 'Check timed out; confirm in your root manager and retry')
-    case 'no-su': return tr('本机没有可用的 su', 'No usable su on this device')
-    default: return tr('未检测', 'Not checked')
+    case 'granted': return tr('已授权（uid 0）', 'Granted (uid 0)', 'Autorizado (uid 0)')
+    case 'requesting': return tr('正在检测授权…', 'Checking the grant…', 'Comprobando la autorización…')
+    case 'denied': return tr('已拒绝', 'Denied', 'Rechazado')
+    case 'timeout': return tr('检测超时，请在管理器确认后重试', 'Check timed out; confirm in your root manager and retry', 'La comprobación venció el plazo; confirma en tu gestor de root y reintenta')
+    case 'no-su': return tr('本机没有可用的 su', 'No usable su on this device', 'No hay su utilizable en este equipo')
+    default: return tr('未检测', 'Not checked', 'Sin comprobar')
   }
 }
 
@@ -694,21 +694,21 @@ export function rootGrantTerminal(state: string): { code: string; text: string; 
     return {
       code: 'root-denied',
       retryable: true,
-      text: tr('已拒绝 root 授权：可在系统的 Root 管理器里改成「允许」，然后重新点开关。', 'Root access was denied. Allow it in your root manager, then toggle again.'),
+      text: tr('已拒绝 root 授权：可在系统的 Root 管理器里改成「允许」，然后重新点开关。', 'Root access was denied. Allow it in your root manager, then toggle again.', 'La autorización root fue rechazada: puedes cambiarla a «Permitir» en el gestor de root del sistema y volver a accionar el interruptor.'),
     }
   }
   if (state === 'timeout') {
     return {
       code: 'root-grant-timeout',
       retryable: true,
-      text: tr('等待授权超时：可以再点一次开关重试。', 'Timed out waiting for the grant; toggle again to retry.'),
+      text: tr('等待授权超时：可以再点一次开关重试。', 'Timed out waiting for the grant; toggle again to retry.', 'Se venció el plazo esperando la autorización; vuelve a accionar el interruptor para reintentar.'),
     }
   }
   if (state === 'no-su') {
     return {
       code: 'root-no-su',
       retryable: false,
-      text: tr('本机没有 su：这不是权限问题，重试也不会成功。需要换一台已 root 的设备，或先刷入 root。', 'No su on this device: this is not a permission problem, so retrying will not help. Use a rooted device or flash root first.'),
+      text: tr('本机没有 su：这不是权限问题，重试也不会成功。需要换一台已 root 的设备，或先刷入 root。', 'No su on this device: this is not a permission problem, so retrying will not help. Use a rooted device or flash root first.', 'Este equipo no tiene su: no es un problema de permisos, así que reintentar no servirá. Necesitas otro equipo con root o flashear root primero.'),
     }
   }
   return null
@@ -725,10 +725,10 @@ export function canRequestRoot(status: RootAccessStatus): boolean {
  * 顺序即真实判据顺序：读不到 → 通道非 root（置灰）→ 未授权 → 已授权。
  */
 export function rootGrantStateLabel(status: RootGrantStatus): string {
-  if (!status.readable) return tr('状态不可读', 'Status unavailable')
-  if (!status.channelRoot && !status.rootGranted) return tr('没有可用 root 通道', 'No root channel')
-  if (!status.granted) return tr('未授权', 'Not granted')
-  return tr('已授权（AI 可用 root）', 'Granted (model can use root)')
+  if (!status.readable) return tr('状态不可读', 'Status unavailable', 'Estado no disponible')
+  if (!status.channelRoot && !status.rootGranted) return tr('没有可用 root 通道', 'No root channel', 'No hay canal root disponible')
+  if (!status.granted) return tr('未授权', 'Not granted', 'Sin autorizar')
+  return tr('已授权（AI 可用 root）', 'Granted (model can use root)', 'Autorizado (la IA puede usar root)')
 }
 
 /** 开关可否点击：只有**通道身份确为 root**才可点（读不到/非 root 一律不可点）。 */
@@ -754,13 +754,13 @@ export function rootGrantChannelHint(status: RootGrantStatus): { text: string; k
     return {
       text: tr(
         'Shizuku 当前以 shell（uid 2000）身份运行——请在 Shizuku 内以 root 启动它，再回到本页开启。',
-        'Shizuku runs as shell (uid 2000). Start it as root inside Shizuku, then turn this on here.',
+        'Shizuku runs as shell (uid 2000). Start it as root inside Shizuku, then turn this on here.', 'Shizuku corre como envoltorio (uid 2000). Inícialo como root dentro de Shizuku y vuelve aquí para activarlo.',
       ),
       kind: 'shell-identity',
     }
   }
   return {
-    text: tr(ROOT_GRANT_NOT_ROOT_TEXT, 'Cannot grant this on a device without root'),
+    text: tr(ROOT_GRANT_NOT_ROOT_TEXT, 'Cannot grant this on a device without root', 'No se puede conceder esto en un equipo sin root'),
     kind: 'not-root',
   }
 }
@@ -910,8 +910,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.openExternalLink
         ? () => window.androidBridge!.openExternalLink!(LINK_DOWNLOAD)
         : undefined,
-      tr('已打开 Shizuku 发布页——下载 release 版 APK 装好后回到这里。', 'The Shizuku release page is open; install the release APK, then come back.'),
-      tr('打开下载页失败', 'Could not open the download page'),
+      tr('已打开 Shizuku 发布页——下载 release 版 APK 装好后回到这里。', 'The Shizuku release page is open; install the release APK, then come back.', 'Se abrió la página de releases de Shizuku; descarga el APK release, instálalo y vuelve aquí.'),
+      tr('打开下载页失败', 'Could not open the download page', 'No se pudo abrir la página de descargas'),
     )
   }, [runShizukuAction])
 
@@ -920,8 +920,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.openExternalLink
         ? () => window.androidBridge!.openExternalLink!(LINK_TUTORIAL)
         : undefined,
-      tr('已用浏览器打开视频教程。', 'The video tutorial is open in the browser.'),
-      tr('打开教程失败', 'Could not open the tutorial'),
+      tr('已用浏览器打开视频教程。', 'The video tutorial is open in the browser.', 'Se abrió el tutorial en video en el navegador.'),
+      tr('打开教程失败', 'Could not open the tutorial', 'No se pudo abrir el tutorial'),
     )
   }, [runShizukuAction])
 
@@ -930,8 +930,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.openShizukuManager
         ? () => window.androidBridge!.openShizukuManager!()
         : undefined,
-      tr('已打开 Shizuku——在那里启动并授权后，回到本页状态会自动刷新。', 'Shizuku is open; start and grant it there, then come back. Status refreshes on its own.'),
-      tr('打开 Shizuku 失败', 'Could not open Shizuku'),
+      tr('已打开 Shizuku——在那里启动并授权后，回到本页状态会自动刷新。', 'Shizuku is open; start and grant it there, then come back. Status refreshes on its own.', 'Se abrió Shizuku; inícialo y autoriza ahí, y al volver a esta página el estado se refresca solo.'),
+      tr('打开 Shizuku 失败', 'Could not open Shizuku', 'No se pudo abrir Shizuku'),
     )
   }, [runShizukuAction])
 
@@ -948,8 +948,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.requestShizukuPermission
         ? () => window.androidBridge!.requestShizukuPermission!()
         : undefined,
-      tr('已发起 Shizuku 授权请求——请在弹窗上点「允许」（本页每 2 秒自动刷新）。', 'Shizuku grant requested; tap Allow in the dialog. This page refreshes every 2 seconds.'),
-      tr('请求 Shizuku 授权失败', 'The Shizuku grant request failed'),
+      tr('已发起 Shizuku 授权请求——请在弹窗上点「允许」（本页每 2 秒自动刷新）。', 'Shizuku grant requested; tap Allow in the dialog. This page refreshes every 2 seconds.', 'Se pidió la autorización de Shizuku; toca «Permitir» en la ventana (esta página se refresca cada 2 segundos).'),
+      tr('请求 Shizuku 授权失败', 'The Shizuku grant request failed', 'Falló la solicitud de autorización de Shizuku'),
     )
   }, [runShizukuAction])
 
@@ -968,8 +968,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.resetShizukuConnection
         ? () => window.androidBridge!.resetShizukuConnection!()
         : undefined,
-      tr('已重置 Shizuku 连接，正在重新建立通道（本页每 2 秒自动重扫）。', 'Shizuku link reset; the channel is reconnecting. This page rescans every 2 seconds.'),
-      tr('重置 Shizuku 连接失败', 'Could not reset the Shizuku link'),
+      tr('已重置 Shizuku 连接，正在重新建立通道（本页每 2 秒自动重扫）。', 'Shizuku link reset; the channel is reconnecting. This page rescans every 2 seconds.', 'Se restableció el enlace de Shizuku; el canal se está reconectando (esta página reescanea cada 2 segundos).'),
+      tr('重置 Shizuku 连接失败', 'Could not reset the Shizuku link', 'No se pudo restablecer el enlace de Shizuku'),
     )
   }, [runShizukuAction])
 
@@ -1010,7 +1010,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
     if (next && parsed?.code === 'request-started') {
       setPendingEnable(true)
       setRootOk(true)
-      setRootMsg(tr('正在检测 root 授权。若没有弹窗，请在你使用的 Root 管理器中允许本应用；授权后会继续本次开启操作。', 'Checking root access. If no dialog appears, allow this app in your root manager; the switch turns on once granted.'))
+      setRootMsg(tr('正在检测 root 授权。若没有弹窗，请在你使用的 Root 管理器中允许本应用；授权后会继续本次开启操作。', 'Checking root access. If no dialog appears, allow this app in your root manager; the switch turns on once granted.', 'Comprobando la autorización root. Si no aparece ninguna ventana, permite esta app en tu gestor de root; al conceder, la activación continúa.'))
       refreshRootGrant()
       refreshRootAccess()
       return
@@ -1018,9 +1018,9 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
     runRootAction(
       undefined,
       next
-        ? tr('已开启 AI root 权限：特权通道按 root 身份执行，请在需要时使用、用完即关。', 'Model root access is on: the privileged channel runs as root. Use it only when needed and turn it off afterwards.')
-        : tr('已关闭 AI root 权限：特权通道已恢复整体拒绝。', 'Model root access is off: the privileged channel refuses root again.'),
-      next ? tr('开启 AI root 权限失败', 'Could not turn on model root access') : tr('关闭 AI root 权限失败', 'Could not turn off model root access'),
+        ? tr('已开启 AI root 权限：特权通道按 root 身份执行，请在需要时使用、用完即关。', 'Model root access is on: the privileged channel runs as root. Use it only when needed and turn it off afterwards.', 'El acceso root de la IA está activado: el canal privilegiado ejecuta como root. Úsalo solo cuando haga falta y apágalo al terminar.')
+        : tr('已关闭 AI root 权限：特权通道已恢复整体拒绝。', 'Model root access is off: the privileged channel refuses root again.', 'El acceso root de la IA está desactivado: el canal privilegiado vuelve a rechazar root.'),
+      next ? tr('开启 AI root 权限失败', 'Could not turn on model root access', 'No se pudo activar el acceso root de la IA') : tr('关闭 AI root 权限失败', 'Could not turn off model root access', 'No se pudo desactivar el acceso root de la IA'),
       raw,
     )
   }, [runRootAction, refreshRootGrant, refreshRootAccess])
@@ -1036,8 +1036,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.requestRootAccess
         ? () => window.androidBridge!.requestRootAccess!()
         : undefined,
-      tr('已发起 root 授权检测，结果会自动刷新；检测成功不代表 AI root 开关已开启。', 'Root access check started; the result refreshes on its own. A pass does not turn on model root access.'),
-      tr('检测 root 授权未通过', 'The root access check did not pass'),
+      tr('已发起 root 授权检测，结果会自动刷新；检测成功不代表 AI root 开关已开启。', 'Root access check started; the result refreshes on its own. A pass does not turn on model root access.', 'La comprobación de autorización root partió; el resultado se refresca solo. Que la comprobación pase no activa el acceso root de la IA.'),
+      tr('检测 root 授权未通过', 'The root access check did not pass', 'La comprobación de autorización root no pasó'),
     )
     refreshRootAccess()
   }, [runRootAction, refreshRootAccess])
@@ -1154,9 +1154,9 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         ? () => window.androidBridge!.setRootConsent!(next)
         : undefined,
       next
-        ? tr('已记录「已阅读」——与免责声明版本绑定，应用升级不需重新确认；免责声明内容更新后才需再确认。', 'Marked as read; this stays valid across app updates until the disclaimer text changes.')
-        : tr('已撤销同意，并同时关闭了 AI root 权限。', 'Consent withdrawn; model root access was turned off too.'),
-      next ? tr('记录「已阅读」失败', 'Could not record the read confirmation') : tr('撤销同意失败', 'Could not withdraw consent'),
+        ? tr('已记录「已阅读」——与免责声明版本绑定，应用升级不需重新确认；免责声明内容更新后才需再确认。', 'Marked as read; this stays valid across app updates until the disclaimer text changes.', 'Se registró «leído»; queda ligado a la versión del descargo de responsabilidad, las actualizaciones de la app no exigen confirmar de nuevo; solo hay que reconfirmar cuando cambia el texto del descargo.')
+        : tr('已撤销同意，并同时关闭了 AI root 权限。', 'Consent withdrawn; model root access was turned off too.', 'Consentimiento revocado; también se desactivó el acceso root de la IA.'),
+      next ? tr('记录「已阅读」失败', 'Could not record the read confirmation', 'No se pudo registrar la confirmación de lectura') : tr('撤销同意失败', 'Could not withdraw consent', 'No se pudo revocar el consentimiento'),
     )
   }, [runRootAction])
 
@@ -1165,8 +1165,8 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       window.androidBridge?.openRootDisclaimer
         ? () => window.androidBridge!.openRootDisclaimer!()
         : undefined,
-      tr('已打开免责声明（APK 内置文档，离线可读）。', 'The disclaimer is open (bundled in the app, works offline).'),
-      tr('打开免责声明失败', 'Could not open the disclaimer'),
+      tr('已打开免责声明（APK 内置文档，离线可读）。', 'The disclaimer is open (bundled in the app, works offline).', 'Se abrió el descargo de responsabilidad (documento incluido en el APK, legible sin conexión).'),
+      tr('打开免责声明失败', 'Could not open the disclaimer', 'No se pudo abrir el descargo de responsabilidad'),
     )
   }, [runRootAction])
 
@@ -1183,17 +1183,17 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       const parsed = raw ? JSON.parse(raw) as { ok?: boolean; code?: string } : undefined
       const ok = parsed?.ok === true
       setForceMsg(ok
-        ? { ok: true, text: tr('已强制销毁全部虚拟屏。', 'All virtual screens were destroyed.') }
-        : { ok: false, text: tr('销毁失败：', 'Destroy failed: ') + describeCallReason(parsed?.code), code: String(parsed?.code ?? 'unknown') })
+        ? { ok: true, text: tr('已强制销毁全部虚拟屏。', 'All virtual screens were destroyed.', 'Se destruyeron todas las pantallas virtuales.') }
+        : { ok: false, text: tr('销毁失败：', 'Destroy failed: ', 'Falló la destrucción: ') + describeCallReason(parsed?.code), code: String(parsed?.code ?? 'unknown') })
     } catch {
-      setForceMsg({ ok: false, text: tr('销毁调用失败（应用内桥不可用）——请重新打开应用后重试。', 'The destroy call failed: the app bridge is unavailable. Reopen the app and retry.'), code: 'bridge-threw' })
+      setForceMsg({ ok: false, text: tr('销毁调用失败（应用内桥不可用）——请重新打开应用后重试。', 'The destroy call failed: the app bridge is unavailable. Reopen the app and retry.', 'Falló la llamada de destrucción (el puente de la app no está disponible); vuelve a abrir la app y reintenta.'), code: 'bridge-threw' })
     }
     refreshVdisplay()
   }, [confirmStage, refreshVdisplay])
 
   const forceLabel = confirmStage === 0
-    ? tr('强制销毁虚拟屏', 'Force destroy virtual screens')
-    : tr('再次点击确认（', 'Tap again to confirm (') + confirmStage + '/3)'
+    ? tr('强制销毁虚拟屏', 'Force destroy virtual screens', 'Destruir pantallas virtuales a la fuerza')
+    : tr('再次点击确认（', 'Tap again to confirm (', 'Toca otra vez para confirmar (') + confirmStage + '/3)'
   // P5-5：进入确认态后必须给**取消途径**。旧实现没有任何退出通道——误点一下就只能
   // 「再点两下把它执行掉」或者等 4 秒超时（超时不可见，用户并不知道自己还能等）。
   const forceArmed = confirmStage > 0
@@ -1284,7 +1284,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         data-dsh-settings-sublayer-back=""
         onClick={() => setView('home')}
       >
-        <span aria-hidden="true">‹</span>{tr('手机控制', 'Phone control')}
+        <span aria-hidden="true">‹</span>{tr('手机控制', 'Phone control', 'Control del teléfono')}
       </button>
       <strong data-dsh-settings-sublayer-title="">{title}</strong>
     </div>
@@ -1311,11 +1311,11 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
   }, [view])
 
   /** 当前下级页的标题（上游注册名之外的本页自造名，中英各一份）。 */
-  const viewTitle = view === 'a11y' ? tr('无障碍通道', 'Accessibility channel')
-    : view === 'shizuku' ? tr('Shizuku 授权', 'Shizuku access')
-      : view === 'vdisplay' ? tr('虚拟屏设置', 'Virtual screen settings')
-        : view === 'advanced' ? tr('高级设置与诊断', 'Advanced and diagnostics')
-          : tr('Root 权限', 'Root access')
+  const viewTitle = view === 'a11y' ? tr('无障碍通道', 'Accessibility channel', 'Canal de accesibilidad')
+    : view === 'shizuku' ? tr('Shizuku 授权', 'Shizuku access', 'Acceso Shizuku')
+      : view === 'vdisplay' ? tr('虚拟屏设置', 'Virtual screen settings', 'Ajustes de pantalla virtual')
+        : view === 'advanced' ? tr('高级设置与诊断', 'Advanced and diagnostics', 'Avanzado y diagnóstico')
+          : tr('Root 权限', 'Root access', 'Acceso root')
 
   if (view !== 'home') return (
     <div
@@ -1333,11 +1333,11 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         <>
           <div className="dsh-gs-row">
             <div className="dsh-gs-text">
-              <div className="dsh-gs-title">{tr('无障碍通道', 'Accessibility channel')}</div>
+              <div className="dsh-gs-title">{tr('无障碍通道', 'Accessibility channel', 'Canal de accesibilidad')}</div>
               <div className="dsh-gs-desc">
                 {a11y.readable && a11y.enabled
-                  ? tr('语义读取、点击与输入已可用。', 'Semantic read, tap and type are available.')
-                  : tr('语义读取、点击与输入都走系统无障碍服务。', 'Semantic read, tap and type go through the system accessibility service.')}
+                  ? tr('语义读取、点击与输入已可用。', 'Semantic read, tap and type are available.', 'La lectura semántica, los toques y la escritura ya están disponibles.')
+                  : tr('语义读取、点击与输入都走系统无障碍服务。', 'Semantic read, tap and type go through the system accessibility service.', 'La lectura semántica, los toques y la escritura pasan por el servicio de accesibilidad del sistema.')}
               </div>
             </div>
             <div className="dsh-gs-control">
@@ -1346,21 +1346,21 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
           </div>
           <p className="dsh-dev-hint" data-code={a11y.readable ? undefined : 'a11y-status-unreadable'}>
             {!a11y.readable
-              ? tr('状态不可读：应用内桥没有返回无障碍状态；这不等于未开启。', 'State unreadable: the app bridge did not return accessibility status. This does not mean it is off.')
+              ? tr('状态不可读：应用内桥没有返回无障碍状态；这不等于未开启。', 'State unreadable: the app bridge did not return accessibility status. This does not mean it is off.', 'Estado ilegible: el puente de la app no devolvió el estado de accesibilidad; eso no equivale a apagado.')
               : (a11y.hint !== '' ? a11y.hint : (a11y.enabled
-                ? tr('已开启：模型可以读取屏幕语义、点击与输入。', 'On: the model can read semantics, tap and type.')
-                : tr('未开启：到 系统设置 → 无障碍 → 已下载的服务 里开启本应用。', 'Off: open Settings → Accessibility → Downloaded services and turn on this app.')))}
+                ? tr('已开启：模型可以读取屏幕语义、点击与输入。', 'On: the model can read semantics, tap and type.', 'Activado: el modelo puede leer la semántica de la pantalla, tocar y escribir.')
+                : tr('未开启：到 系统设置 → 无障碍 → 已下载的服务 里开启本应用。', 'Off: open Settings → Accessibility → Downloaded services and turn on this app.', 'Apagado: abre Ajustes → Accesibilidad → Servicios descargados y activa esta app.')))}
           </p>
           {a11y.readable && !a11y.enabled && a11y.restrictedSettingsApplies ? (
             <p className="dsh-dev-hint">{tr(
               'Android 13 及以上对侧载应用默认开启「受限设置」，系统页里本应用的开关是灰的：先点「解锁受限设置」（经 Shizuku 特权通道，只影响本应用这一项），再回去开启。',
-              'Android 13 and later restrict sideloaded apps, so this app switch is greyed out. Tap Unlock restricted settings (Shizuku, affects only this app), then turn it on again.',
+              'Android 13 and later restrict sideloaded apps, so this app switch is greyed out. Tap Unlock restricted settings (Shizuku, affects only this app), then turn it on again.', 'Android 13 y posteriores restringen por defecto las apps instaladas lateralmente, así que el interruptor de esta app sale gris en la página del sistema: toca primero «Desbloquear ajustes restringidos» (vía el canal privilegiado de Shizuku; solo afecta esta app) y vuelve para activarla.',
             )}</p>
           ) : null}
           <div className="dsh-dev-row dsh-pc-actions">
-            <button type="button" className="dsh-dev-btn" onClick={openA11y}>{tr('去开启无障碍服务', 'Open accessibility settings')}</button>
+            <button type="button" className="dsh-dev-btn" onClick={openA11y}>{tr('去开启无障碍服务', 'Open accessibility settings', 'Abrir ajustes de accesibilidad')}</button>
             {a11y.readable && !a11y.enabled && a11y.restrictedSettingsApplies ? (
-              <button type="button" className="dsh-dev-btn" onClick={unlockA11y}>{tr('解锁受限设置', 'Unlock restricted settings')}</button>
+              <button type="button" className="dsh-dev-btn" onClick={unlockA11y}>{tr('解锁受限设置', 'Unlock restricted settings', 'Desbloquear ajustes restringidos')}</button>
             ) : null}
           </div>
           {renderReceipt(a11yMsg, a11yOk)}
@@ -1370,7 +1370,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         <>
           <div className="dsh-pc-detail">
             <div className="dsh-screen-control-detail">
-              <strong>{tr('Shizuku 特权通道', 'Shizuku privileged channel')}</strong>
+              <strong>{tr('Shizuku 特权通道', 'Shizuku privileged channel', 'Canal privilegiado de Shizuku')}</strong>
               <span data-code={shizuku.readable ? undefined : 'shizuku-status-unreadable'}>
                 {shizukuStateLabel(shizuku)}
               </span>
@@ -1380,12 +1380,12 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
             </p>
             {shizukuAction === 'download' ? (
               <button type="button" className="dsh-dev-btn dsh-pc-primary" onClick={downloadShizuku}>
-                {tr('下载 Shizuku', 'Download Shizuku')}
+                {tr('下载 Shizuku', 'Download Shizuku', 'Descargar Shizuku')}
               </button>
             ) : null}
             {shizukuAction === 'open' ? (
               <button type="button" className="dsh-dev-btn dsh-pc-primary" onClick={openShizuku}>
-                {tr('打开 Shizuku', 'Open Shizuku')}
+                {tr('打开 Shizuku', 'Open Shizuku', 'Abrir Shizuku')}
               </button>
             ) : null}
             {shizukuAction === 'request' ? (
@@ -1395,30 +1395,30 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                 disabled={!shizuku.readable || !shizuku.running}
                 onClick={requestShizukuPermission}
               >
-                {tr('请求 Shizuku 授权', 'Request Shizuku access')}
+                {tr('请求 Shizuku 授权', 'Request Shizuku access', 'Pedir acceso a Shizuku')}
               </button>
             ) : null}
             {shizukuAction === 'request' ? (
-              <p className="dsh-dev-hint">{tr('这一步只在你点击后发起官方授权请求，不会自动申请。授权框需要前台界面才会弹出。', 'This starts the official grant request only when you tap it; nothing is requested automatically. The dialog needs the app in front.')}</p>
+              <p className="dsh-dev-hint">{tr('这一步只在你点击后发起官方授权请求，不会自动申请。授权框需要前台界面才会弹出。', 'This starts the official grant request only when you tap it; nothing is requested automatically. The dialog needs the app in front.', 'Esto lanza la solicitud de autorización oficial solo cuando lo tocas; no se pide nada automáticamente. La ventana necesita la app en primer plano para aparecer.')}</p>
             ) : null}
             {shizukuAction !== undefined ? (
-              <p className="dsh-dev-hint">{tr('入口会跳到应用外；授权只能在 Shizuku 内由你亲手完成。装好并授权后回到本页，状态每 2 秒自动刷新。', 'The entry leaves the app; only you can grant inside Shizuku. Come back afterwards; status refreshes every 2 seconds.')}</p>
+              <p className="dsh-dev-hint">{tr('入口会跳到应用外；授权只能在 Shizuku 内由你亲手完成。装好并授权后回到本页，状态每 2 秒自动刷新。', 'The entry leaves the app; only you can grant inside Shizuku. Come back afterwards; status refreshes every 2 seconds.', 'La entrada sale de la app; la autorización solo la puedes dar tú dentro de Shizuku. Instala, autoriza y vuelve a esta página; el estado se refresca cada 2 segundos.')}</p>
             ) : null}
           </div>
           {shizuku.diagnostics ? (
             <details className="dsh-dev-diag dsh-pc-detail">
-              <summary>{tr('查看启动失败诊断日志', 'Show the startup failure log')}</summary>
+              <summary>{tr('查看启动失败诊断日志', 'Show the startup failure log', 'Ver el registro de fallo de arranque')}</summary>
               <pre>{shizuku.diagnostics}</pre>
             </details>
           ) : null}
           <div className="dsh-pc-detail">
-            <p className="dsh-pc-detail-title">{tr('连接维护', 'Connection tools')}</p>
+            <p className="dsh-pc-detail-title">{tr('连接维护', 'Connection tools', 'Mantenimiento de conexión')}</p>
             <div className="dsh-dev-row">
-              <button type="button" className="dsh-dev-link" onClick={tutorialShizuku}>{tr('点击查看教程', 'Watch the tutorial')}</button>
-              <button type="button" className="dsh-dev-btn" onClick={refreshShizuku}>{tr('刷新状态', 'Refresh status')}</button>
-              <button type="button" className="dsh-dev-btn" onClick={resetShizuku}>{tr('重置链接', 'Reset link')}</button>
+              <button type="button" className="dsh-dev-link" onClick={tutorialShizuku}>{tr('点击查看教程', 'Watch the tutorial', 'Ver el tutorial')}</button>
+              <button type="button" className="dsh-dev-btn" onClick={refreshShizuku}>{tr('刷新状态', 'Refresh status', 'Refrescar estado')}</button>
+              <button type="button" className="dsh-dev-btn" onClick={resetShizuku}>{tr('重置链接', 'Reset link', 'Restablecer enlace')}</button>
             </div>
-            <p className="dsh-dev-hint">{tr('重置只重建 Shizuku 连接，不改变授权。', 'Reset only rebuilds the Shizuku link; it does not change grants.')}</p>
+            <p className="dsh-dev-hint">{tr('重置只重建 Shizuku 连接，不改变授权。', 'Reset only rebuilds the Shizuku link; it does not change grants.', 'Restablecer solo reconstruye el enlace de Shizuku; no cambia las autorizaciones.')}</p>
             {renderReceipt(shizukuMsg, shizukuOk)}
           </div>
         </>
@@ -1427,36 +1427,36 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         <>
           <label className="dsh-screen-scope-row">
             <span>
-              <strong>{tr('虚拟屏分辨率档位', 'Virtual screen scale')}</strong>
-              <small>{tr('跟随真机比例缩放（下次建屏生效；默认 0.75）。', 'Scales with the device; applies to the next screen (default 0.75).')}</small>
+              <strong>{tr('虚拟屏分辨率档位', 'Virtual screen scale', 'Escala de pantalla virtual')}</strong>
+              <small>{tr('跟随真机比例缩放（下次建屏生效；默认 0.75）。', 'Scales with the device; applies to the next screen (default 0.75).', 'Escala según la proporción del equipo real (vale para la próxima pantalla que se cree; por defecto 0.75).')}</small>
               {scaleRead.readable ? null : (
                 <small className="dsh-dev-hint" data-code="vdisplay-scale-unreadable">
-                  {tr('状态不可读：本页拿不到当前档位，当前值不是事实，也不能在这里改。', 'State unreadable: this page cannot read the current tier, so the value is not a fact and cannot be changed here.')}
+                  {tr('状态不可读：本页拿不到当前档位，当前值不是事实，也不能在这里改。', 'State unreadable: this page cannot read the current tier, so the value is not a fact and cannot be changed here.', 'Estado ilegible: esta página no puede leer el escalón actual, así que el valor mostrado no es un hecho y no se puede cambiar aquí.')}
                 </small>
               )}
             </span>
             <select
-              aria-label={tr('虚拟屏分辨率档位', 'Virtual screen scale')}
+              aria-label={tr('虚拟屏分辨率档位', 'Virtual screen scale', 'Escala de pantalla virtual')}
               disabled={!scaleRead.readable}
               value={String(scaleRead.value)}
               onChange={(event) => setScale(Number(event.target.value))}
             >
               {SCALE_OPTIONS.map((option) => (
                 <option key={option} value={String(option)}>
-                  {option === 1 ? tr('原生', 'Native') : String(Math.round(option * 100)) + '%'}
+                  {option === 1 ? tr('原生', 'Native', 'Nativo') : String(Math.round(option * 100)) + '%'}
                 </option>
               ))}
             </select>
           </label>
           <div className="dsh-gs-row">
             <div className="dsh-gs-text">
-              <div className="dsh-gs-title">{tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window (shown in the background)')}</div>
+              <div className="dsh-gs-title">{tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window (shown in the background)', 'Ventana de pantalla virtual (se muestra al ir a segundo plano)')}</div>
               <div className="dsh-gs-desc">
-                {tr('只读浮窗：退后台时显示虚拟屏画面，前台只在侧栏可见。不是开发者选项里的「悬浮球」（那个是任务面板入口）。', 'Read-only window: it shows the virtual screen in the background and only in the sidebar in front. It is not the floating ball in developer options.')}
+                {tr('只读浮窗：退后台时显示虚拟屏画面，前台只在侧栏可见。不是开发者选项里的「悬浮球」（那个是任务面板入口）。', 'Read-only window: it shows the virtual screen in the background and only in the sidebar in front. It is not the floating ball in developer options.', 'Ventana de solo lectura: muestra la pantalla virtual al ir a segundo plano; en primer plano solo se ve en la barra lateral. No es la «burbuja flotante» de las opciones de desarrollador (esa es la entrada del panel de tareas).')}
               </div>
               {floatRead.readable ? null : (
                 <div className="dsh-dev-hint" data-code="vdisplay-float-unreadable">
-                  {tr('状态不可读：本页拿不到浮窗开关，当前值不是事实，也不能在这里改。', 'State unreadable: this page cannot read the window switch, so the value is not a fact and cannot be changed here.')}
+                  {tr('状态不可读：本页拿不到浮窗开关，当前值不是事实，也不能在这里改。', 'State unreadable: this page cannot read the window switch, so the value is not a fact and cannot be changed here.', 'Estado ilegible: esta página no puede leer el interruptor de la ventana, así que el valor mostrado no es un hecho y no se puede cambiar aquí.')}
                 </div>
               )}
             </div>
@@ -1465,13 +1465,13 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                 checked={floatRead.value}
                 disabled={!floatRead.readable}
                 onChange={(next) => setFloat(next)}
-                label={tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window')}
+                label={tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window', 'Ventana de pantalla virtual')}
               />
             </div>
           </div>
           <div className="dsh-pc-detail">
-            <p className="dsh-pc-detail-title">{tr('强制销毁虚拟屏', 'Force destroy virtual screens')}</p>
-            <p className="dsh-dev-hint">{tr('销毁全部虚拟屏与其上的任务（无视会话归属）；需连续点击三次确认，点错可取消。', 'Destroys every virtual screen and its tasks, regardless of owner. Tap three times to confirm; you can cancel.')}</p>
+            <p className="dsh-pc-detail-title">{tr('强制销毁虚拟屏', 'Force destroy virtual screens', 'Destruir pantallas virtuales a la fuerza')}</p>
+            <p className="dsh-dev-hint">{tr('销毁全部虚拟屏与其上的任务（无视会话归属）；需连续点击三次确认，点错可取消。', 'Destroys every virtual screen and its tasks, regardless of owner. Tap three times to confirm; you can cancel.', 'Destruye todas las pantallas virtuales y sus tareas, sin importar a qué sesión pertenezcan; hay que tocar tres veces seguidas para confirmar, y un toque errado se puede cancelar.')}</p>
             <div className="dsh-dev-row">
               <button
                 type="button"
@@ -1483,7 +1483,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                 {forceLabel}
               </button>
               {forceArmed ? (
-                <button type="button" className="dsh-dev-link" onClick={cancelForce}>{tr('取消', 'Cancel')}</button>
+                <button type="button" className="dsh-dev-link" onClick={cancelForce}>{tr('取消', 'Cancel', 'Cancelar')}</button>
               ) : null}
             </div>
             {forceMsg === null ? null : (
@@ -1498,30 +1498,30 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       {view === 'advanced' ? (
         <>
           <div className="dsh-pc-detail">
-            <p className="dsh-pc-detail-title">{tr('屏幕范围详情', 'Screen access detail')}</p>
+            <p className="dsh-pc-detail-title">{tr('屏幕范围详情', 'Screen access detail', 'Detalle de acceso a pantallas')}</p>
             <div className="dsh-screen-control-detail">
-              <strong>{tr('开放屏幕范围', 'Screen access')}</strong>
+              <strong>{tr('开放屏幕范围', 'Screen access', 'Acceso a pantallas')}</strong>
               <span>{scopeLabel(scopeRead.value)}</span>
             </div>
             <p className="dsh-dev-hint">{tr(
               '范围同时约束截图、坐标点击与文本输入。仅虚拟屏幕是默认值；改成真实屏幕前请确认你接受模型读取该屏内容。',
-              'The scope also bounds screenshots, taps and text input. Virtual only is the default; before opening the real screen, confirm that you accept the model reading it.',
+              'The scope also bounds screenshots, taps and text input. Virtual only is the default; before opening the real screen, confirm that you accept the model reading it.', 'El alcance también limita las capturas de pantalla, los toques por coordenada y la escritura de texto. «Solo pantallas virtuales» es el valor por defecto; antes de pasar a la pantalla real, confirma que aceptas que el modelo lea su contenido.',
             )}</p>
             {scopeRead.readable ? null : (
               <p className="dsh-dev-hint" data-code="screen-scope-unreadable">
-                {tr('状态不可读：本页拿不到当前屏幕范围，当前值不是事实，也不能在这里改。', 'State unreadable: this page cannot read the current screen access, so the value is not a fact and cannot be changed here.')}
+                {tr('状态不可读：本页拿不到当前屏幕范围，当前值不是事实，也不能在这里改。', 'State unreadable: this page cannot read the current screen access, so the value is not a fact and cannot be changed here.', 'Estado ilegible: esta página no puede leer el acceso a pantallas actual, así que el valor mostrado no es un hecho y no se puede cambiar aquí.')}
               </p>
             )}
           </div>
           <div className="dsh-pc-detail">
-            <p className="dsh-pc-detail-title">{tr('诊断', 'Diagnostics')}</p>
+            <p className="dsh-pc-detail-title">{tr('诊断', 'Diagnostics', 'Diagnóstico')}</p>
             <div className="dsh-screen-control-detail">
-              <strong>{tr('虚拟屏状态', 'Virtual screen status')}</strong>
+              <strong>{tr('虚拟屏状态', 'Virtual screen status', 'Estado de la pantalla virtual')}</strong>
               <span data-code={vdisplay.code}>{vdisplayStateLabel(vdisplay.state)}</span>
             </div>
             <p className="dsh-dev-hint">{vdisplay.guidance}</p>
             <div className="dsh-screen-control-detail">
-              <strong>{tr('Shizuku 特权通道', 'Shizuku privileged channel')}</strong>
+              <strong>{tr('Shizuku 特权通道', 'Shizuku privileged channel', 'Canal privilegiado de Shizuku')}</strong>
               <span>{shizukuStateLabel(shizuku)}</span>
             </div>
             <p className="dsh-dev-hint">
@@ -1529,7 +1529,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
             </p>
             {shizuku.diagnostics ? (
               <details className="dsh-dev-diag">
-                <summary>{tr('查看启动失败诊断日志', 'Show the startup failure log')}</summary>
+                <summary>{tr('查看启动失败诊断日志', 'Show the startup failure log', 'Ver el registro de fallo de arranque')}</summary>
                 <pre>{shizuku.diagnostics}</pre>
               </details>
             ) : null}
@@ -1548,39 +1548,39 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                   setNativeDiag(readNativeControlDiagnostics() ?? '')
                 }}
               >
-                <summary>{tr('查看原生控制审计（脱敏）', 'Show native control audit (redacted)')}</summary>
+                <summary>{tr('查看原生控制审计（脱敏）', 'Show native control audit (redacted)', 'Ver auditoría de control nativo (con datos censurados)')}</summary>
                 <p className="dsh-dev-hint">{tr(
                   '最多 64 条脱敏记录与调用计数；不含命令文本、页面文本或图像数据。',
-                  'At most 64 redacted entries plus call counters; no command text, page text, or image data.',
+                  'At most 64 redacted entries plus call counters; no command text, page text, or image data.', 'Como máximo 64 entradas censuradas más contadores de llamadas; no incluye texto de comandos, texto de páginas ni datos de imágenes.',
                 )}</p>
                 <pre>{nativeDiag === null ? '' : nativeDiag.trim() === ''
-                  ? tr('原生诊断不可读（桥未提供或调用失败）。', 'Native diagnostics unreadable (bridge missing or the call failed).')
+                  ? tr('原生诊断不可读（桥未提供或调用失败）。', 'Native diagnostics unreadable (bridge missing or the call failed).', 'Diagnóstico nativo ilegible (el puente no lo entrega o la llamada falló).')
                   : nativeDiag}</pre>
               </details>
             ) : null}
             <div className="dsh-dev-row">
-              <button type="button" className="dsh-dev-btn" onClick={refreshShizuku}>{tr('刷新状态', 'Refresh status')}</button>
-              <button type="button" className="dsh-dev-btn" onClick={resetShizuku}>{tr('重置链接', 'Reset link')}</button>
+              <button type="button" className="dsh-dev-btn" onClick={refreshShizuku}>{tr('刷新状态', 'Refresh status', 'Refrescar estado')}</button>
+              <button type="button" className="dsh-dev-btn" onClick={resetShizuku}>{tr('重置链接', 'Reset link', 'Restablecer enlace')}</button>
             </div>
             {renderReceipt(shizukuMsg, shizukuOk)}
           </div>
           <div className="dsh-gs-row">
             <div className="dsh-gs-text">
-              <div className="dsh-gs-title">{tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window (shown in the background)')}</div>
-              <div className="dsh-gs-desc">{tr('只读浮窗；关闭后前台仍可在侧栏查看。', 'Read-only window; when off, the sidebar still shows it in front.')}</div>
+              <div className="dsh-gs-title">{tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window (shown in the background)', 'Ventana de pantalla virtual (se muestra al ir a segundo plano)')}</div>
+              <div className="dsh-gs-desc">{tr('只读浮窗；关闭后前台仍可在侧栏查看。', 'Read-only window; when off, the sidebar still shows it in front.', 'Ventana de solo lectura; al apagarla, en primer plano sigue visible en la barra lateral.')}</div>
             </div>
             <div className="dsh-gs-control">
               <Switch
                 checked={floatRead.value}
                 disabled={!floatRead.readable}
                 onChange={(next) => setFloat(next)}
-                label={tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window')}
+                label={tr('虚拟屏浮窗（退后台自动显示）', 'Virtual screen window', 'Ventana de pantalla virtual')}
               />
             </div>
           </div>
           <div className="dsh-pc-detail">
-            <p className="dsh-pc-detail-title">{tr('强制销毁虚拟屏', 'Force destroy virtual screens')}</p>
-            <p className="dsh-dev-hint">{tr('销毁全部虚拟屏与其上的任务（无视会话归属）；需连续点击三次确认，点错可取消。', 'Destroys every virtual screen and its tasks, regardless of owner. Tap three times to confirm; you can cancel.')}</p>
+            <p className="dsh-pc-detail-title">{tr('强制销毁虚拟屏', 'Force destroy virtual screens', 'Destruir pantallas virtuales a la fuerza')}</p>
+            <p className="dsh-dev-hint">{tr('销毁全部虚拟屏与其上的任务（无视会话归属）；需连续点击三次确认，点错可取消。', 'Destroys every virtual screen and its tasks, regardless of owner. Tap three times to confirm; you can cancel.', 'Destruye todas las pantallas virtuales y sus tareas, sin importar a qué sesión pertenezcan; hay que tocar tres veces seguidas para confirmar, y un toque errado se puede cancelar.')}</p>
             <div className="dsh-dev-row">
               <button
                 type="button"
@@ -1592,7 +1592,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                 {forceLabel}
               </button>
               {forceArmed ? (
-                <button type="button" className="dsh-dev-link" onClick={cancelForce}>{tr('取消', 'Cancel')}</button>
+                <button type="button" className="dsh-dev-link" onClick={cancelForce}>{tr('取消', 'Cancel', 'Cancelar')}</button>
               ) : null}
             </div>
             {forceMsg === null ? null : (
@@ -1605,52 +1605,52 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         </>
       ) : null}
       {view === 'root' ? (
-        <section className="dsh-root-access-card dsh-pc-plain" aria-label={tr('Root 权限设置', 'Root access settings')}>
+        <section className="dsh-root-access-card dsh-pc-plain" aria-label={tr('Root 权限设置', 'Root access settings', 'Ajustes de acceso root')}>
           <div className="dsh-screen-control-detail">
-            <strong>{tr('Root 权限', 'Root access')}</strong>
+            <strong>{tr('Root 权限', 'Root access', 'Acceso root')}</strong>
             <span data-code={rootGrant.readable ? undefined : 'root-grant-unreadable'}>{rootGrantStateLabel(rootGrant)}</span>
           </div>
-          <p className="dsh-dev-hint">{tr('先确认可用通道，再决定是否允许 AI 使用。', 'Confirm an available channel before letting the model use it.')}</p>
+          <p className="dsh-dev-hint">{tr('先确认可用通道，再决定是否允许 AI 使用。', 'Confirm an available channel before letting the model use it.', 'Confirma primero un canal disponible antes de decidir si dejas que la IA lo use.')}</p>
 
           <div className="dsh-root-step">
             <div className="dsh-screen-control-detail">
-              <strong>{tr('1. 应用 root 授权', '1. App root access')}</strong>
+              <strong>{tr('1. 应用 root 授权', '1. App root access', '1. Acceso root de la app')}</strong>
               <span data-code={rootAccess.readable ? rootAccess.state : 'root-access-unreadable'}>
                 {rootAccessStateLabel(rootAccess)}
               </span>
             </div>
             <p className="dsh-dev-hint">
-              {rootAccess.guidance || tr('检测应用的 su 授权；Shizuku 已以 root 启动时，也可直接使用该通道。', 'Checks the app su grant. If Shizuku runs as root, that channel works too.')}
+              {rootAccess.guidance || tr('检测应用的 su 授权；Shizuku 已以 root 启动时，也可直接使用该通道。', 'Checks the app su grant. If Shizuku runs as root, that channel works too.', 'Comprueba la autorización su de la app. Si Shizuku ya corre como root, también puedes usar ese canal directamente.')}
             </p>
             <button type="button" className="dsh-dev-btn" disabled={!canRequestRoot(rootAccess)} onClick={requestRoot}>
-              {rootAccess.requesting ? tr('正在检测…', 'Checking…') : tr('检测 root 授权', 'Check root access')}
+              {rootAccess.requesting ? tr('正在检测…', 'Checking…', 'Comprobando…') : tr('检测 root 授权', 'Check root access', 'Comprobar autorización root')}
             </button>
             {rootAccess.managerInstalled ? (
-              <p className="dsh-dev-hint">{tr('Root 管理器：', 'Root manager: ')}{rootAccess.managerLabel}{tr('——在管理器中允许本应用，再回这里检测。', ' — allow this app there, then check again here.')}</p>
+              <p className="dsh-dev-hint">{tr('Root 管理器：', 'Root manager: ', 'Gestor de root: ')}{rootAccess.managerLabel}{tr('——在管理器中允许本应用，再回这里检测。', ' — allow this app there, then check again here.', ' — permite esta app en el gestor y vuelve aquí a comprobar.')}</p>
             ) : null}
           </div>
 
           <div className="dsh-root-step">
             <div className="dsh-screen-control-detail">
-              <strong>{tr('2. AI root 权限', '2. Model root access')}</strong>
+              <strong>{tr('2. AI root 权限', '2. Model root access', '2. Acceso root de la IA')}</strong>
               <span data-code={rootGrant.readable ? undefined : 'root-grant-unreadable'}>{rootGrantStateLabel(rootGrant)}</span>
             </div>
             {!rootGrant.readable ? (
-              <p className="dsh-dev-error">{tr('授权状态不可读。重新打开应用再试；读不到时不会允许 AI 使用 root。', 'The grant state cannot be read. Reopen the app; without it, the model never gets root.')}</p>
+              <p className="dsh-dev-error">{tr('授权状态不可读。重新打开应用再试；读不到时不会允许 AI 使用 root。', 'The grant state cannot be read. Reopen the app; without it, the model never gets root.', 'El estado de autorización no se puede leer. Vuelve a abrir la app y reintenta; mientras no se lea, no se permitirá que la IA use root.')}</p>
             ) : !rootGrant.channelRoot && !rootGrant.rootGranted ? (
               <p className={rootGrantChannelHint(rootGrant).kind === 'shell-identity' ? 'dsh-dev-hint' : 'dsh-dev-error'}
                 data-code={rootGrantChannelHint(rootGrant).kind === 'shell-identity' ? 'shizuku-shell-identity' : 'not-root-channel'}>
                 {rootGrantChannelHint(rootGrant).text}
               </p>
             ) : (
-              <p className="dsh-dev-hint">{tr('可用通道：', 'Channel: ')}{rootGrant.channelRoot ? 'Shizuku root' : tr('应用 su root', 'app su root')}{tr('。应用获得授权不等于已允许 AI 使用。', '. An app grant does not by itself allow the model.')}</p>
+              <p className="dsh-dev-hint">{tr('可用通道：', 'Channel: ', 'Canal disponible: ')}{rootGrant.channelRoot ? 'Shizuku root' : tr('应用 su root', 'app su root', 'su root de la app')}{tr('。应用获得授权不等于已允许 AI 使用。', '. An app grant does not by itself allow the model.', '. Que la app tenga la autorización no equivale a haber permitido el uso por la IA.')}</p>
             )}
-            <button type="button" className="dsh-dev-link" onClick={openRootDisclaimer}>{tr('阅读《AI root 权限免责声明》', 'Read the root access disclaimer')}</button>
+            <button type="button" className="dsh-dev-link" onClick={openRootDisclaimer}>{tr('阅读《AI root 权限免责声明》', 'Read the root access disclaimer', 'Leer el descargo de responsabilidad del acceso root de la IA')}</button>
             <div className="dsh-gs-row">
               <div className="dsh-gs-text">
-                <div className="dsh-gs-title">{tr('已阅读免责声明', 'Disclaimer read')}</div>
+                <div className="dsh-gs-title">{tr('已阅读免责声明', 'Disclaimer read', 'Descargo leído')}</div>
                 <div className="dsh-gs-desc">
-                  {tr('理解 root 操作可能修改或删除系统与个人数据，并承担相应风险。应用升级不需重新确认（免责声明内容更新时才需）；撤销同意会同时关闭 AI 开关。', 'Root operations can change or delete system and personal data, and you accept that risk. App updates keep this consent; revoking it also turns model access off.')}
+                  {tr('理解 root 操作可能修改或删除系统与个人数据，并承担相应风险。应用升级不需重新确认（免责声明内容更新时才需）；撤销同意会同时关闭 AI 开关。', 'Root operations can change or delete system and personal data, and you accept that risk. App updates keep this consent; revoking it also turns model access off.', 'Las operaciones root pueden modificar o borrar datos del sistema y personales, y asumes el riesgo correspondiente. Las actualizaciones de la app no exigen confirmar de nuevo (solo cuando cambia el texto del descargo); revocar el consentimiento también apaga el acceso de la IA.')}
                 </div>
               </div>
               <div className="dsh-gs-control">
@@ -1658,15 +1658,15 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                   checked={rootGrant.consentValid}
                   disabled={!rootGrant.readable}
                   onChange={(next) => toggleRootConsent(next)}
-                  label={tr('已阅读免责声明', 'Disclaimer read')}
+                  label={tr('已阅读免责声明', 'Disclaimer read', 'Descargo leído')}
                 />
               </div>
             </div>
             <div className="dsh-gs-row">
               <div className="dsh-gs-text">
-                <div className="dsh-gs-title">{tr('授权 AI 使用 root', 'Allow model root access')}</div>
+                <div className="dsh-gs-title">{tr('授权 AI 使用 root', 'Allow model root access', 'Permitir acceso root de la IA')}</div>
                 <div className="dsh-gs-desc">
-                  {rootGrant.honesty || tr('这是策略与知情同意开关，不是技术沙箱。关闭后 AI 的 root 执行路径会被拒绝。', 'This is a policy and consent switch, not a sandbox. When off, model root execution is refused.')}
+                  {rootGrant.honesty || tr('这是策略与知情同意开关，不是技术沙箱。关闭后 AI 的 root 执行路径会被拒绝。', 'This is a policy and consent switch, not a sandbox. When off, model root execution is refused.', 'Este es un interruptor de política y consentimiento informado, no una sandbox técnica. Al apagarlo, la ejecución root de la IA queda rechazada.')}
                 </div>
               </div>
               <div className="dsh-gs-control">
@@ -1682,12 +1682,12 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                   // 唯一出路是去点名字完全不同的「已阅读免责声明」开关。收回权限必须是永远可做的动作。
                   disabled={!rootGrant.readable || (!rootGrant.granted && (rootAccess.state === 'no-su' || !canToggleRootGrant(rootGrant) || !rootGrant.consentValid))}
                   onChange={(next) => toggleRootGrant(next)}
-                  label={tr('授权 AI 使用 root', 'Allow model root access')}
+                  label={tr('授权 AI 使用 root', 'Allow model root access', 'Permitir acceso root de la IA')}
                 />
               </div>
             </div>
             {rootGrant.readable && canToggleRootGrant(rootGrant) && !rootGrant.consentValid ? (
-              <p className="dsh-dev-hint">{tr('请先阅读并确认免责声明，才能开启 AI root 权限。', 'Read and accept the disclaimer before turning on model root access.')}</p>
+              <p className="dsh-dev-hint">{tr('请先阅读并确认免责声明，才能开启 AI root 权限。', 'Read and accept the disclaimer before turning on model root access.', 'Lee y acepta el descargo de responsabilidad antes de poder activar el acceso root de la IA.')}</p>
             ) : null}
             {/* issue #1377：灰开关必须解释为什么；issue #1592：已开启时改成「可关闭」口径。 */}
             {rootAccess.state === 'no-su' ? (
@@ -1695,7 +1695,7 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
                 <p className="dsh-dev-hint" data-code="root-no-su">
                   {tr(
                     '本机现在读不到可用的 su（卸载了 root，或本应用被加进了 DenyList）。已经开启的 AI root 授权仍可从本开关关闭——关闭不需要 su。',
-                    'No usable su right now (root was removed, or this app was added to a DenyList). The model root grant that is already on can still be turned off here; turning it off does not need su.',
+                    'No usable su right now (root was removed, or this app was added to a DenyList). The model root grant that is already on can still be turned off here; turning it off does not need su.', 'Ahora mismo no se lee un su utilizable (se quitó root, o esta app se agregó a una DenyList). La autorización root de la IA que ya está activada igual se puede apagar desde este interruptor; apagarla no necesita su.',
                   )}
                 </p>
               ) : (
@@ -1708,10 +1708,10 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
           </div>
 
           <details className="dsh-root-maintenance">
-            <summary>{tr('文件属主维护', 'File ownership repair')}</summary>
-            <p className="dsh-dev-hint">{tr('root 写盘后应用无法读取文件时使用。仅修复本应用数据目录，不改变 AI 授权。', 'Use this after root writes make files unreadable. It repairs only this app data folder.')}</p>
+            <summary>{tr('文件属主维护', 'File ownership repair', 'Mantenimiento de propietarios de archivos')}</summary>
+            <p className="dsh-dev-hint">{tr('root 写盘后应用无法读取文件时使用。仅修复本应用数据目录，不改变 AI 授权。', 'Use this after root writes make files unreadable. It repairs only this app data folder.', 'Úsalo cuando tras escrituras root la app no puede leer archivos. Repara solo la carpeta de datos de esta app; no cambia la autorización de la IA.')}</p>
             <button type="button" className="dsh-dev-btn" disabled={repairState.running || (!rootAccess.granted && !rootGrant.channelRoot)} onClick={repairOwnership}>
-              {repairState.running ? tr('属主维护进行中', 'Repair running') : tr('修复文件属主', 'Repair ownership')}
+              {repairState.running ? tr('属主维护进行中', 'Repair running', 'Mantenimiento en marcha') : tr('修复文件属主', 'Repair ownership', 'Reparar propietarios')}
             </button>
             {repairFeedback === undefined ? null : (
               <p role="status" aria-live="polite" className={repairFeedback.ok === false ? 'dsh-dev-error' : 'dsh-dev-hint'}>{repairFeedback.text}</p>
@@ -1733,12 +1733,12 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
       <style>{PHONE_CONTROL_CSS}</style>
       <div className="dsh-pc-screen">
         <div className="dsh-pc-screen-head">
-          <strong id="dsh-phone-control-title" className="dsh-gs-title">{tr('屏幕访问范围', 'Screen access')}</strong>
+          <strong id="dsh-phone-control-title" className="dsh-gs-title">{tr('屏幕访问范围', 'Screen access', 'Acceso a pantallas')}</strong>
           <span className="dsh-pc-state" {...(scopeRead.readable ? {} : { 'data-unreadable': 'true', 'data-code': 'screen-scope-unreadable' })}>
-            {scopeRead.readable ? scopeLabel(scopeRead.value) : tr('检测中', 'Checking')}
+            {scopeRead.readable ? scopeLabel(scopeRead.value) : tr('检测中', 'Checking', 'Comprobando')}
           </span>
         </div>
-        <div className="dsh-pc-segment" role="radiogroup" aria-label={tr('屏幕访问范围', 'Screen access')}>
+        <div className="dsh-pc-segment" role="radiogroup" aria-label={tr('屏幕访问范围', 'Screen access', 'Acceso a pantallas')}>
           {SCOPES.map((option) => (
             <button
               key={option}
@@ -1755,45 +1755,45 @@ export function PhoneControlSection(_props: PropsRuntime<'settings.section'>) {
         <p className="dsh-pc-scope-line" data-code={scopeRead.readable ? undefined : 'screen-scope-unreadable'}>
           {scopeRead.readable
             ? scopeSentence(scopeRead.value)
-            : tr('屏幕范围不可读：当前选中项不是事实，也不能在这里改动。', 'Screen access is unreadable: the selection is not a fact and cannot be changed here.')}
+            : tr('屏幕范围不可读：当前选中项不是事实，也不能在这里改动。', 'Screen access is unreadable: the selection is not a fact and cannot be changed here.', 'El acceso a pantallas es ilegible: la selección mostrada no es un hecho y no se puede cambiar aquí.')}
         </p>
       </div>
 
       {row(
-        tr('无障碍通道', 'Accessibility channel'),
+        tr('无障碍通道', 'Accessibility channel', 'Canal de accesibilidad'),
         a11y.readable && a11y.enabled
-          ? tr('语义读取、点击与输入已可用。', 'Semantic read, tap and type are available.')
-          : tr('系统无障碍服务，用于读取语义、点击与输入。', 'The system accessibility service for semantics, taps and typing.'),
+          ? tr('语义读取、点击与输入已可用。', 'Semantic read, tap and type are available.', 'La lectura semántica, los toques y la escritura ya están disponibles.')
+          : tr('系统无障碍服务，用于读取语义、点击与输入。', 'The system accessibility service for semantics, taps and typing.', 'El servicio de accesibilidad del sistema, para leer semántica, tocar y escribir.'),
         a11yRowState(a11y),
         () => setView('a11y'),
         { dataCode: a11y.readable ? undefined : 'a11y-status-unreadable', unreadable: !a11y.readable },
       )}
       {row(
-        tr('Shizuku 授权', 'Shizuku access'),
+        tr('Shizuku 授权', 'Shizuku access', 'Acceso Shizuku'),
         shizukuRowHint(shizuku),
         shizukuStateLabel(shizuku),
         () => setView('shizuku'),
         { dataCode: shizuku.readable ? undefined : 'shizuku-status-unreadable', unreadable: !shizuku.readable },
       )}
       {row(
-        tr('虚拟屏设置', 'Virtual screen settings'),
-        tr('分辨率档位、只读浮窗与强制销毁。', 'Scale, read-only window and force destroy.')
-          + ' ' + tr('当前状态：', 'Status: ') + vdisplayStateLabel(vdisplay.state)
-          + (scaleRead.readable ? ' · ' + (scaleRead.value === 1 ? tr('原生', 'Native') : Math.round(scaleRead.value * 100) + '%') : ''),
-        !scaleRead.readable ? tr('档位不可读', 'Scale unreadable') : undefined,
+        tr('虚拟屏设置', 'Virtual screen settings', 'Ajustes de pantalla virtual'),
+        tr('分辨率档位、只读浮窗与强制销毁。', 'Scale, read-only window and force destroy.', 'Escala, ventana de solo lectura y destrucción forzada.')
+          + ' ' + tr('当前状态：', 'Status: ', 'Estado actual: ') + vdisplayStateLabel(vdisplay.state)
+          + (scaleRead.readable ? ' · ' + (scaleRead.value === 1 ? tr('原生', 'Native', 'Nativo') : Math.round(scaleRead.value * 100) + '%') : ''),
+        !scaleRead.readable ? tr('档位不可读', 'Scale unreadable', 'Escala ilegible') : undefined,
         () => setView('vdisplay'),
         { unreadable: !scaleRead.readable || !floatRead.readable || !vdisplayIsReadable(vdisplay) },
       )}
       {row(
-        tr('高级设置与诊断', 'Advanced and diagnostics'),
+        tr('高级设置与诊断', 'Advanced and diagnostics', 'Avanzado y diagnóstico'),
         !scaleRead.readable
-          ? tr('档位不可读；诊断里保留全部可读状态。', 'Scale unreadable; diagnostics keep every readable state.')
-          : tr('状态回执、连接维护与销毁入口。', 'Status receipts, connection tools and destroy entry.'),
+          ? tr('档位不可读；诊断里保留全部可读状态。', 'Scale unreadable; diagnostics keep every readable state.', 'Escala ilegible; el diagnóstico conserva todos los estados legibles.')
+          : tr('状态回执、连接维护与销毁入口。', 'Status receipts, connection tools and destroy entry.', 'Recibos de estado, mantenimiento de conexión y entrada de destrucción.'),
         undefined,
         () => setView('advanced'),
       )}
       {row(
-        tr('Root 权限', 'Root access'),
+        tr('Root 权限', 'Root access', 'Acceso root'),
         rootHomeHint(rootGrant, rootAccess),
         rootRowState(rootGrant, rootAccess),
         () => setView('root'),

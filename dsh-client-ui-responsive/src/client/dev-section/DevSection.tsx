@@ -60,22 +60,22 @@ function readOverlayEntryStyle(): OverlayEntryShape | undefined {
  */
 const confirmText = (): Record<'restart' | 'close' | 'clean', { title: string; desc: string; ok: string }> => ({
   restart: {
-    title: tr('重启 DeepCode？', 'Restart DeepCode?'),
-    desc: tr('将终止并自动重新启动本地引擎与页面（约数秒）。未发送的内容会保留在输入框。', 'The local engine and page restart in a few seconds. Unsent text stays in the box.'),
-    ok: tr('重启', 'Restart'),
+    title: tr('重启 DeepCode？', 'Restart DeepCode?', '¿Reiniciar DeepCode?'),
+    desc: tr('将终止并自动重新启动本地引擎与页面（约数秒）。未发送的内容会保留在输入框。', 'The local engine and page restart in a few seconds. Unsent text stays in the box.', 'El motor local y la página se reinician en unos segundos. El texto no enviado queda en el cuadro de entrada.'),
+    ok: tr('重启', 'Restart', 'Reiniciar'),
   },
   close: {
-    title: tr('关闭并回退到初始化界面？', 'Close and return to the start screen?'),
-    desc: tr('将停止本地引擎并退出到初始化界面；引擎不会自动重启，需手动再次启动。', 'The local engine stops and the app returns to the start screen. It will not restart by itself.'),
-    ok: tr('关闭', 'Close'),
+    title: tr('关闭并回退到初始化界面？', 'Close and return to the start screen?', '¿Cerrar y volver a la pantalla de inicio?'),
+    desc: tr('将停止本地引擎并退出到初始化界面；引擎不会自动重启，需手动再次启动。', 'The local engine stops and the app returns to the start screen. It will not restart by itself.', 'El motor local se detiene y la app vuelve a la pantalla de inicio. No se reinicia sola.'),
+    ok: tr('关闭', 'Close', 'Cerrar'),
   },
   clean: {
-    title: tr('清理临时工作区？', 'Clear the temporary workspace?'),
+    title: tr('清理临时工作区？', 'Clear the temporary workspace?', '¿Limpiar el espacio de trabajo temporal?'),
     desc: tr(
       '将删除文件直达（分享进来）的临时文件；相关会话中的文件引用会失效，无法恢复。会话本身、附件、配置与凭据不受影响。',
-      'Temporary files received by sharing are deleted; references in sessions stop working and cannot be restored. Sessions, attachments, settings, and credentials are untouched.',
+      'Temporary files received by sharing are deleted; references in sessions stop working and cannot be restored. Sessions, attachments, settings, and credentials are untouched.', 'Se borran los archivos temporales recibidos por compartir; las referencias en las sesiones dejan de funcionar y no se pueden restaurar. Las sesiones, los adjuntos, los ajustes y las credenciales no se ven afectados.',
     ),
-    ok: tr('清理', 'Clear'),
+    ok: tr('清理', 'Clear', 'Limpiar'),
   },
 })
 
@@ -168,9 +168,9 @@ export function DevSection({ renderSlot }: DevSectionProps) {
       // FX-205.5：清理范围收敛为「本工具自有临时项」，用户放入工作区的文件不再被删。
       setIncomingMsg(j?.ok
         ? { text: `已清理本工具临时项（${j.removed ?? 0} 项）——相关会话中的文件引用将失效` }
-        : { text: tr('清理未完成——请重试；仍失败可复制日志反馈', 'Clearing did not finish; retry, or copy the log and report it.'), ...(j?.reason === undefined ? {} : { code: j.reason }) })
+        : { text: tr('清理未完成——请重试；仍失败可复制日志反馈', 'Clearing did not finish; retry, or copy the log and report it.', 'La limpieza no terminó; reintenta, o copia el registro y repórtalo.'), ...(j?.reason === undefined ? {} : { code: j.reason }) })
     } catch {
-      setIncomingMsg({ text: tr('清理请求失败（仅安卓应用内有此能力）——请确认在本机应用内操作', 'Clearing is only available inside the Android app.') })
+      setIncomingMsg({ text: tr('清理请求失败（仅安卓应用内有此能力）——请确认在本机应用内操作', 'Clearing is only available inside the Android app.', 'La limpieza solo está disponible dentro de la app Android.') })
     } finally {
       setCleaning(false)
       void refreshIncoming()
@@ -199,7 +199,7 @@ export function DevSection({ renderSlot }: DevSectionProps) {
       started = false
     }
     if (!started) {
-      setActionMsg({ text: tr('重启没有发起：应用与页面的连接不可用，或已在重启中——请稍等几秒；仍无效请关闭并重新打开应用', 'The restart did not start: the app and page lost their connection, or one is already running. Wait a few seconds, then reopen the app.') })
+      setActionMsg({ text: tr('重启没有发起：应用与页面的连接不可用，或已在重启中——请稍等几秒；仍无效请关闭并重新打开应用', 'The restart did not start: the app and page lost their connection, or one is already running. Wait a few seconds, then reopen the app.', 'El reinicio no partió: se perdió la conexión entre la app y la página, o ya hay uno en curso. Espera unos segundos y vuelve a abrir la app.') })
       return
     }
     setRestarting(true)
@@ -219,12 +219,12 @@ export function DevSection({ renderSlot }: DevSectionProps) {
     setActionMsg(null)
     try {
       if (window.androidBridge?.reloadWebUI === undefined) {
-        setActionMsg({ text: tr('刷新界面不可用：应用与页面的连接未装配——请关闭并重新打开应用', 'Refreshing is unavailable: the app bridge is missing. Reopen the app.') })
+        setActionMsg({ text: tr('刷新界面不可用：应用与页面的连接未装配——请关闭并重新打开应用', 'Refreshing is unavailable: the app bridge is missing. Reopen the app.', 'Refrescar la interfaz no está disponible: falta el puente de la app. Vuelve a abrir la app.') })
         return
       }
       window.androidBridge.reloadWebUI()
     } catch {
-      setActionMsg({ text: tr('刷新界面失败：应用与页面的连接不可用——请关闭并重新打开应用', 'Refreshing failed: the app and page lost their connection. Reopen the app.') })
+      setActionMsg({ text: tr('刷新界面失败：应用与页面的连接不可用——请关闭并重新打开应用', 'Refreshing failed: the app and page lost their connection. Reopen the app.', 'Falló refrescar la interfaz: se perdió la conexión entre la app y la página. Vuelve a abrir la app.') })
     }
   }, [])
 
@@ -232,12 +232,12 @@ export function DevSection({ renderSlot }: DevSectionProps) {
     setActionMsg(null)
     try {
       if (window.androidBridge?.openConsole === undefined) {
-        setActionMsg({ text: tr('控制台不可用：应用与页面的连接未装配——请关闭并重新打开应用', 'The console is unavailable: the app bridge is missing. Reopen the app.') })
+        setActionMsg({ text: tr('控制台不可用：应用与页面的连接未装配——请关闭并重新打开应用', 'The console is unavailable: the app bridge is missing. Reopen the app.', 'La consola no está disponible: falta el puente de la app. Vuelve a abrir la app.') })
         return
       }
       window.androidBridge.openConsole()
     } catch {
-      setActionMsg({ text: tr('控制台打开失败：应用与页面的连接不可用——请关闭并重新打开应用', 'The console did not open: the app and page lost their connection. Reopen the app.') })
+      setActionMsg({ text: tr('控制台打开失败：应用与页面的连接不可用——请关闭并重新打开应用', 'The console did not open: the app and page lost their connection. Reopen the app.', 'La consola no se abrió: se perdió la conexión entre la app y la página. Vuelve a abrir la app.') })
     }
   }, [])
 
@@ -261,14 +261,14 @@ export function DevSection({ renderSlot }: DevSectionProps) {
       // 「返回后自动生效」因此不再成立——必须回前台重读 + 用户重新打开开关。
       refreshOverlay()
       if (enabled && !started) {
-        setOverlayMsg(tr('已打开系统授权页；授予后请重新打开本开关', 'The system permission page is open; turn this switch on again after granting.'))
+        setOverlayMsg(tr('已打开系统授权页；授予后请重新打开本开关', 'The system permission page is open; turn this switch on again after granting.', 'La página de permisos del sistema está abierta; activa este interruptor de nuevo tras conceder.'))
       } else if (enabled) {
-        setOverlayMsg(tr('悬浮球已开启：任意界面可拖拽；点开面板实时查看工具调用，可一键停止', 'The floating ball is on: drag it anywhere and tap it to watch tool calls and stop them.'))
+        setOverlayMsg(tr('悬浮球已开启：任意界面可拖拽；点开面板实时查看工具调用，可一键停止', 'The floating ball is on: drag it anywhere and tap it to watch tool calls and stop them.', 'La burbuja flotante está activada: arrástrala a cualquier lugar y tócala para ver las llamadas a herramientas y detenerlas.'))
       } else {
-        setOverlayMsg(tr('悬浮球已关闭', 'The floating ball is off'))
+        setOverlayMsg(tr('悬浮球已关闭', 'The floating ball is off', 'La burbuja flotante está desactivada'))
       }
     } catch {
-      setOverlayMsg(tr('应用内连接不可用（悬浮球仅安卓应用内支持）——请重新打开应用后重试', 'The bridge is unavailable; the floating ball only works inside the Android app. Reopen it and try again.'))
+      setOverlayMsg(tr('应用内连接不可用（悬浮球仅安卓应用内支持）——请重新打开应用后重试', 'The bridge is unavailable; the floating ball only works inside the Android app. Reopen it and try again.', 'El puente no está disponible; la burbuja flotante solo funciona dentro de la app Android. Vuelve a abrirla y reintenta.'))
     }
   }, [refreshOverlay])
 
@@ -298,10 +298,10 @@ export function DevSection({ renderSlot }: DevSectionProps) {
       const raw = window.androidBridge?.exportConfig?.()
       const j = JSON.parse(raw ?? '{}') as { ok?: boolean; path?: string; error?: string }
       setConfigMsg(j.ok
-        ? tr('已导出到 ', 'Exported to ') + (j.path ?? 'exports/config/')
-        : tr('导出失败：', 'Export failed: ') + (j.error ?? tr('未知错误', 'unknown error')))
+        ? tr('已导出到 ', 'Exported to ', 'Exportado a ') + (j.path ?? 'exports/config/')
+        : tr('导出失败：', 'Export failed: ', 'Error al exportar: ') + (j.error ?? tr('未知错误', 'unknown error', 'error desconocido')))
     } catch {
-      setConfigMsg(tr('导出失败：应用内连接不可用（仅安卓应用内可用）——请重新打开应用后重试', 'Export failed: the app bridge is unavailable. Reopen the app and try again.'))
+      setConfigMsg(tr('导出失败：应用内连接不可用（仅安卓应用内可用）——请重新打开应用后重试', 'Export failed: the app bridge is unavailable. Reopen the app and try again.', 'Falló la exportación: el puente de la app no está disponible. Vuelve a abrir la app y reintenta.'))
     }
   }, [])
 
@@ -310,11 +310,11 @@ export function DevSection({ renderSlot }: DevSectionProps) {
       const raw = window.androidBridge?.importConfig?.()
       const j = JSON.parse(raw ?? '{}') as { ok?: boolean; hint?: string; error?: string; backup?: string }
       setConfigMsg(j.ok
-        ? tr('已导入并生效（原配置备份为 ', 'Imported and applied (the previous file is ') +
-          (j.backup ?? '*.import-backup') + tr('）。', '). ') + (j.hint ?? '')
-        : tr('导入失败：', 'Import failed: ') + (j.error ?? tr('未知错误', 'unknown error')))
+        ? tr('已导入并生效（原配置备份为 ', 'Imported and applied (the previous file is ', 'Importado y aplicado (el archivo anterior es ') +
+          (j.backup ?? '*.import-backup') + tr('）。', '). ', '). ') + (j.hint ?? '')
+        : tr('导入失败：', 'Import failed: ', 'Error al importar: ') + (j.error ?? tr('未知错误', 'unknown error', 'error desconocido')))
     } catch {
-      setConfigMsg(tr('导入失败：应用内连接不可用（仅安卓应用内可用）——请重新打开应用后重试', 'Import failed: the app bridge is unavailable. Reopen the app and try again.'))
+      setConfigMsg(tr('导入失败：应用内连接不可用（仅安卓应用内可用）——请重新打开应用后重试', 'Import failed: the app bridge is unavailable. Reopen the app and try again.', 'Falló la importación: el puente de la app no está disponible. Vuelve a abrir la app y reintenta.'))
     }
   }, [])
 
@@ -326,14 +326,14 @@ export function DevSection({ renderSlot }: DevSectionProps) {
   )
 
   const logPathHint = allFiles === false
-    ? tr('未授予「所有文件访问」：日志将写入应用私有目录，授权后自动切换公共目录。', 'No all-files access: logs stay in the app private folder until you grant it.')
-    : tr('开启后按天写入 Documents/dshdata/log/dsh-<日期>.log。', 'When on, one log file per day goes to Documents/dshdata/log/.')
+    ? tr('未授予「所有文件访问」：日志将写入应用私有目录，授权后自动切换公共目录。', 'No all-files access: logs stay in the app private folder until you grant it.', 'Sin acceso a todos los archivos: los registros se quedan en la carpeta privada de la app hasta que lo concedas.')
+    : tr('开启后按天写入 Documents/dshdata/log/dsh-<日期>.log。', 'When on, one log file per day goes to Documents/dshdata/log/.', 'Al activarlo se escribe un registro por día en Documents/dshdata/log/.')
 
   return (
     <div data-plugin="dev-section" onKeyDown={onKeyDown}>
       {/* 分区名已由设置中心的二级页标题条承担（竖屏 settings-nav；横屏上游 nav 行），
           这里不再重复一遍「开发者选项」，只留这一页真正独有的一句说明。 */}
-      <p className="dsh-dev-note">{tr('控制台是运行时内嵌命令行；日志默认关闭。', 'The console is the runtime shell; logging is off by default.')}</p>
+      <p className="dsh-dev-note">{tr('控制台是运行时内嵌命令行；日志默认关闭。', 'The console is the runtime shell; logging is off by default.', 'La consola es la línea de comandos integrada del runtime; el registro viene desactivado por defecto.')}</p>
 
       {/* 0.14.0：屏幕/Shizuku/虚拟屏/浮窗/无障碍/强制销毁已迁到独立「手机控制」设置页。 */}
 
@@ -343,16 +343,16 @@ export function DevSection({ renderSlot }: DevSectionProps) {
 
       <div className="dsh-gs-row dsh-gs-stacked">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('运行时', 'Runtime')}</div>
-          <div className="dsh-gs-desc">{tr('重启引擎、关闭引擎、重载界面或打开控制台。', 'Restart the engine, stop it, reload the page, or open the console.')}</div>
+          <div className="dsh-gs-title">{tr('运行时', 'Runtime', 'Runtime')}</div>
+          <div className="dsh-gs-desc">{tr('重启引擎、关闭引擎、重载界面或打开控制台。', 'Restart the engine, stop it, reload the page, or open the console.', 'Reinicia el motor, lo detiene, recarga la página o abre la consola.')}</div>
         </div>
         <div className="dsh-gs-control dsh-gs-actions">
           <Button size="sm" onClick={askRestart} disabled={restarting}>
-            {restarting ? tr('重启中…', 'Restarting…') : tr('重启', 'Restart')}
+            {restarting ? tr('重启中…', 'Restarting…', 'Reiniciando…') : tr('重启', 'Restart', 'Reiniciar')}
           </Button>
-          <Button size="sm" variant="outline" className="dsh-danger" onClick={askClose}>{tr('关闭', 'Close')}</Button>
-          <Button size="sm" onClick={reload}>{tr('刷新界面', 'Reload page')}</Button>
-          <Button size="sm" onClick={openConsole}>{tr('打开控制台', 'Open console')}</Button>
+          <Button size="sm" variant="outline" className="dsh-danger" onClick={askClose}>{tr('关闭', 'Close', 'Cerrar')}</Button>
+          <Button size="sm" onClick={reload}>{tr('刷新界面', 'Reload page', 'Recargar página')}</Button>
+          <Button size="sm" onClick={openConsole}>{tr('打开控制台', 'Open console', 'Abrir consola')}</Button>
         </div>
       </div>
 
@@ -360,11 +360,11 @@ export function DevSection({ renderSlot }: DevSectionProps) {
 
       <div className="dsh-gs-row">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('调试日志', 'Debug log')}</div>
+          <div className="dsh-gs-title">{tr('调试日志', 'Debug log', 'Registro de depuración')}</div>
           <div className="dsh-gs-desc">{logPathHint}</div>
         </div>
         <div className="dsh-gs-control">
-          <Switch checked={devLog} onChange={(next) => toggleLog(next)} label={tr('调试日志', 'Debug log')} />
+          <Switch checked={devLog} onChange={(next) => toggleLog(next)} label={tr('调试日志', 'Debug log', 'Registro de depuración')} />
         </div>
       </div>
 
@@ -373,48 +373,48 @@ export function DevSection({ renderSlot }: DevSectionProps) {
           用户分不清哪个是任务面板入口、哪个是虚拟屏画面。此处点名各自是什么。 */}
       <div className="dsh-gs-row">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('悬浮球（任务面板入口）', 'Floating ball (task panel)')}</div>
+          <div className="dsh-gs-title">{tr('悬浮球（任务面板入口）', 'Floating ball (task panel)', 'Burbuja flotante (panel de tareas)')}</div>
           <div className="dsh-gs-desc">
-            {tr('点开可看工具调用并随时停止；它不是手机控制页的虚拟屏浮窗。', 'Tap it to watch tool calls and stop them. It is not the virtual screen window in Phone control.')}
+            {tr('点开可看工具调用并随时停止；它不是手机控制页的虚拟屏浮窗。', 'Tap it to watch tool calls and stop them. It is not the virtual screen window in Phone control.', 'Tócala para ver las llamadas a herramientas y detenerlas cuando quieras. No es la ventana de pantalla virtual de Control del teléfono.')}
           </div>
         </div>
         <div className="dsh-gs-control">
-          <Switch checked={overlayOn} onChange={(next) => toggleOverlay(next)} label={tr('悬浮球（任务面板入口）', 'Floating ball (task panel)')} />
+          <Switch checked={overlayOn} onChange={(next) => toggleOverlay(next)} label={tr('悬浮球（任务面板入口）', 'Floating ball (task panel)', 'Burbuja flotante (panel de tareas)')} />
         </div>
       </div>
       {overlayMsg !== null && <p className="dsh-dev-hint">{overlayMsg}</p>}
       <label className="dsh-screen-scope-row" data-overlay-entry-setting>
         <span>
-          <strong>{tr('新悬浮入口形态', 'New floating entry shape')}</strong>
-          <small>{tr('仅对新悬浮界面生效；此设置不会启用新界面或开启悬浮窗，旧版入口保持不变。', 'Requires the new overlay UI. This setting does not enable it or turn on the overlay; the legacy entry is unchanged.')}</small>
-          <small>{tr('自由球可拖动；贴边后继续向外滑可收成细条，细条向屏内拉出恢复球。', 'Drag the free ball; after reaching either edge, slide farther outward to make a strip. Pull the strip inward to restore the ball.')}</small>
-          {entryStyle === undefined && <small>{tr('当前应用无法读写入口形态，请更新或重新打开应用后重试。', 'The entry shape is unavailable in this app. Update or reopen the app and try again.')}</small>}
+          <strong>{tr('新悬浮入口形态', 'New floating entry shape', 'Nueva forma de entrada flotante')}</strong>
+          <small>{tr('仅对新悬浮界面生效；此设置不会启用新界面或开启悬浮窗，旧版入口保持不变。', 'Requires the new overlay UI. This setting does not enable it or turn on the overlay; the legacy entry is unchanged.', 'Solo aplica a la nueva interfaz flotante; este ajuste no la activa ni enciende la ventana flotante, la entrada anterior queda igual.')}</small>
+          <small>{tr('自由球可拖动；贴边后继续向外滑可收成细条，细条向屏内拉出恢复球。', 'Drag the free ball; after reaching either edge, slide farther outward to make a strip. Pull the strip inward to restore the ball.', 'Arrastra la burbuja libre; al llegar a un borde, sigue deslizando hacia afuera para convertirla en una barra fina. Tira de la barra hacia adentro para recuperar la burbuja.')}</small>
+          {entryStyle === undefined && <small>{tr('当前应用无法读写入口形态，请更新或重新打开应用后重试。', 'The entry shape is unavailable in this app. Update or reopen the app and try again.', 'La app actual no puede leer ni escribir la forma de entrada; actualiza o vuelve a abrir la app y reintenta.')}</small>}
         </span>
         <select
-          aria-label={tr('新悬浮入口形态', 'New floating entry shape')}
+          aria-label={tr('新悬浮入口形态', 'New floating entry shape', 'Nueva forma de entrada flotante')}
           disabled={entryStyle === undefined}
           value={entryStyle ?? ''}
           onChange={(event) => changeEntryStyle(event.target.value)}
         >
-          <option value="" disabled>{tr('不可用', 'Unavailable')}</option>
-          <option value="ball">{tr('自由悬浮球', 'Free ball')}</option>
-          <option value="strip">{tr('边缘细条', 'Edge strip')}</option>
+          <option value="" disabled>{tr('不可用', 'Unavailable', 'No disponible')}</option>
+          <option value="ball">{tr('自由悬浮球', 'Free ball', 'Burbuja libre')}</option>
+          <option value="strip">{tr('边缘细条', 'Edge strip', 'Barra de borde')}</option>
         </select>
       </label>
-      {entryStyleFailed && <p role="status" className="dsh-dev-hint">{tr('入口形态未保存，请重新打开应用后重试。', 'The entry shape was not saved. Reopen the app and try again.')}</p>}
+      {entryStyleFailed && <p role="status" className="dsh-dev-hint">{tr('入口形态未保存，请重新打开应用后重试。', 'The entry shape was not saved. Reopen the app and try again.', 'No se guardó la forma de entrada; vuelve a abrir la app y reintenta.')}</p>}
 
       {/* 0.13.1 W4：配置导入/导出（安全手改通道；引擎读私有目录，改共享目录副本无效） */}
       <div className="dsh-gs-row dsh-gs-stacked">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('配置文件', 'Config file')}</div>
+          <div className="dsh-gs-title">{tr('配置文件', 'Config file', 'Archivo de configuración')}</div>
           <div className="dsh-gs-desc">
-            {tr('导出到 Documents/dshdata/exports/config/（文件名随活动配置而定，通常是 cordis.patch.yml），改完点「导入配置」生效。导出不含 API 密钥。', 'Exported to Documents/dshdata/exports/config/ (the file name follows the active config, usually cordis.patch.yml); edit it there, then tap Import config. API keys are not included.')}
+            {tr('导出到 Documents/dshdata/exports/config/（文件名随活动配置而定，通常是 cordis.patch.yml），改完点「导入配置」生效。导出不含 API 密钥。', 'Exported to Documents/dshdata/exports/config/ (the file name follows the active config, usually cordis.patch.yml); edit it there, then tap Import config. API keys are not included.', 'Se exporta a Documents/dshdata/exports/config/ (el nombre del archivo sigue la configuración activa, normalmente cordis.patch.yml); edítalo ahí y toca Importar configuración para aplicar. No incluye claves de API.')}
           </div>
         </div>
         <div className="dsh-gs-control dsh-gs-actions">
-          <Button size="sm" onClick={() => { openSettingsDocument() }}>{tr('打开', 'Open')}</Button>
-          <Button size="sm" onClick={exportConfig}>{tr('导出配置', 'Export config')}</Button>
-          <Button size="sm" onClick={importConfig}>{tr('导入配置', 'Import config')}</Button>
+          <Button size="sm" onClick={() => { openSettingsDocument() }}>{tr('打开', 'Open', 'Abrir')}</Button>
+          <Button size="sm" onClick={exportConfig}>{tr('导出配置', 'Export config', 'Exportar configuración')}</Button>
+          <Button size="sm" onClick={importConfig}>{tr('导入配置', 'Import config', 'Importar configuración')}</Button>
         </div>
       </div>
       {configMsg !== null && <p className="dsh-dev-hint">{configMsg}</p>}
@@ -427,25 +427,25 @@ export function DevSection({ renderSlot }: DevSectionProps) {
       {/* 0.14.8 提级：模型能力补齐已从开发者选项**提级**为设置页一级分区「模型能力」。
           用户反馈在设置页找不到它（入口原先只在这里，而真实用户不走开发者选项）。
           同一功能双实现是审查档 §5 的结构性根因，故这里只留指路、不再渲染同一组控件。 */}
-      <p className="dsh-dev-hint">{tr('第三方模型能力在「设置 → 模型能力」里。', 'Third-party model options live in Settings > Model capabilities.')}</p>
+      <p className="dsh-dev-hint">{tr('第三方模型能力在「设置 → 模型能力」里。', 'Third-party model options live in Settings > Model capabilities.', 'Las opciones de modelos de terceros están en Ajustes > Capacidades del modelo.')}</p>
 
       {/* 0.15.0 提级：应用自更新入口已从开发者选项**提级**为设置页一级分区「应用更新」
           （用户拍板「更新块继续放设置页、从开发者选项提出来」）。真因同「通知」与「模型能力」：
           真实用户不走开发者选项，入口埋在这里等于不可达。
           同一功能双实现是审查档 §5 的结构性根因，故这里只留指路、不再渲染同一组控件。 */}
-      <p className="dsh-dev-hint">{tr('应用更新在「设置 → 应用更新」里。', 'App updates live in Settings > App updates.')}</p>
+      <p className="dsh-dev-hint">{tr('应用更新在「设置 → 应用更新」里。', 'App updates live in Settings > App updates.', 'Las actualizaciones de la app están en Ajustes > Actualizaciones de la app.')}</p>
 
       {/* 0.14.1 批 3（P3-5）：通知设置已从开发者选项**提级**为设置页一级分区「通知」。
           这里只留指路（同功能双实现是审查档 §5 的结构性根因，故不重复渲染同一组开关）。 */}
-      <p className="dsh-dev-hint">{tr('提醒方式在「设置 → 通知」里。', 'Alert options live in Settings > Notifications.')}</p>
+      <p className="dsh-dev-hint">{tr('提醒方式在「设置 → 通知」里。', 'Alert options live in Settings > Notifications.', 'Las opciones de avisos están en Ajustes > Notificaciones.')}</p>
 
       {/* F5.1/D15：文件直达临时工作区（占用展示 + 一键清理；PRD R16 手动清理 + 占用展示） */}
       {incomingBytes !== null && (
         <div className="dsh-gs-row">
           <div className="dsh-gs-text">
-            <div className="dsh-gs-title">{tr('文件直达临时工作区', 'Temporary workspace')}</div>
+            <div className="dsh-gs-title">{tr('文件直达临时工作区', 'Temporary workspace', 'Espacio de trabajo temporal')}</div>
             <div className="dsh-gs-desc">
-              {tr('当前占用：', 'Using ')}{fmtBytes(incomingBytes)}{tr('。清理会删除外部文件；相关会话中的引用将失效。', '. Clearing deletes external files; references in sessions stop working.')}
+              {tr('当前占用：', 'Using ', 'En uso: ')}{fmtBytes(incomingBytes)}{tr('。清理会删除外部文件；相关会话中的引用将失效。', '. Clearing deletes external files; references in sessions stop working.', '. Al limpiar se borran los archivos externos; las referencias en las sesiones dejan de funcionar.')}
             </div>
           </div>
           <div className="dsh-gs-control">
@@ -457,14 +457,14 @@ export function DevSection({ renderSlot }: DevSectionProps) {
               disabled={cleaning || incomingBytes === 0}
               onClick={() => { setConfirm('clean') }}
             >
-              {cleaning ? tr('清理中…', 'Clearing…') : tr('一键清理', 'Clear all')}
+              {cleaning ? tr('清理中…', 'Clearing…', 'Limpiando…') : tr('一键清理', 'Clear all', 'Limpiar todo')}
             </Button>
           </div>
         </div>
       )}
       {incomingMsg !== null && <p className="dsh-dev-hint" {...noticeDataAttrs(incomingMsg)}>{incomingMsg.text}</p>}
-      <p className="dsh-dev-hint">{tr('清理会删除临时工作区内的外部文件；相关会话中的文件引用将失效。', 'Clearing deletes external files in the temporary workspace; references in sessions stop working.')}</p>
-      <p className="dsh-dev-warn">{tr('日志包含命令与模型内容，仅用于排查，请及时清理。', 'Logs contain commands and model content; use them only for debugging and clear them soon.')}</p>
+      <p className="dsh-dev-hint">{tr('清理会删除临时工作区内的外部文件；相关会话中的文件引用将失效。', 'Clearing deletes external files in the temporary workspace; references in sessions stop working.', 'Al limpiar se borran los archivos externos del espacio de trabajo temporal; las referencias en las sesiones dejan de funcionar.')}</p>
+      <p className="dsh-dev-warn">{tr('日志包含命令与模型内容，仅用于排查，请及时清理。', 'Logs contain commands and model content; use them only for debugging and clear them soon.', 'Los registros contienen comandos y contenido del modelo; úsalos solo para depurar y límpialos pronto.')}</p>
 
       {confirm !== null && (
         <div

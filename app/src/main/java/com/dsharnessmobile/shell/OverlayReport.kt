@@ -56,7 +56,7 @@ class OverlayReport(private val svc: OverlayService) {
     val lines = reportLines(entry, svc)
 
     val title = TextView(svc).apply {
-      text = UiText.t(svc, "工作汇报", "Work report")
+      text = UiText.t(svc, "工作汇报", "Work report", "Informe de trabajo")
       textSize = 13f
       setTypeface(null, android.graphics.Typeface.BOLD)
       setTextColor(c.inputText)
@@ -70,7 +70,7 @@ class OverlayReport(private val svc: OverlayService) {
       // ≈ 26dp 高，手指按不准；并补 contentDescription——无文字的「✕」在无障碍里此前是空白控件。
       minWidth = (MIN_TOUCH_TARGET_DP * dp).toInt()
       minHeight = (MIN_TOUCH_TARGET_DP * dp).toInt()
-      contentDescription = UiText.t(svc, "关闭工作汇报", "Close work report")
+      contentDescription = UiText.t(svc, "关闭工作汇报", "Close work report", "Cerrar informe de trabajo")
       isClickable = true
       setOnClickListener { hideReport() }
     }
@@ -140,7 +140,7 @@ class OverlayReport(private val svc: OverlayService) {
       orientation = LinearLayout.HORIZONTAL
       gravity = Gravity.CENTER
       setPadding(0, handlePad, 0, handlePad)
-      contentDescription = UiText.t(svc, "上下拖动调整汇报栏高度", "Drag to resize the report panel")
+      contentDescription = UiText.t(svc, "上下拖动调整汇报栏高度", "Drag to resize the report panel", "Arrastra para ajustar la altura del panel de informes")
       isClickable = true
       addView(handle, LinearLayout.LayoutParams((36 * dp).toInt(), (4 * dp).toInt()))
     }

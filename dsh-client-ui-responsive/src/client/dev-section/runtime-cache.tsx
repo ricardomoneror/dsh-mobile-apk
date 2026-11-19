@@ -67,17 +67,17 @@ function fmtBytes(n: number): string {
  * 未登记的原因落到 [describeSkipReason] 的兜底句，原始串只进 `data-reason`。
  */
 const SKIP_LABEL: Record<string, string> = {
-  'not-allowlisted': tr('未列入白名单（本版不清理）', 'Not on the allowlist; this version keeps it'),
-  absent: tr('不存在', 'Not found'),
-  unreadable: tr('不可读', 'Unreadable'),
-  'log-root-unresolved': tr('日志目录未注入（应用未提供日志目录）', 'No log folder was provided by the app'),
-  'current-generation-absent': tr('当前引擎日志不在场（引擎未启动）', 'The current engine log is absent (engine stopped)'),
-  preserved: tr('属保留项', 'Kept on purpose'),
-  'scope-rejected': tr('越出白名单作用域（已拒绝）', 'Outside the allowlist; refused'),
-  vanished: tr('执行前已消失', 'Already gone before it ran'),
-  aborted: tr('被执行中断跳过', 'Skipped because the run was interrupted'),
+  'not-allowlisted': tr('未列入白名单（本版不清理）', 'Not on the allowlist; this version keeps it', 'Fuera de la lista permitida (esta versión no lo limpia)'),
+  absent: tr('不存在', 'Not found', 'No existe'),
+  unreadable: tr('不可读', 'Unreadable', 'Ilegible'),
+  'log-root-unresolved': tr('日志目录未注入（应用未提供日志目录）', 'No log folder was provided by the app', 'La carpeta de registros no fue inyectada (la app no entregó carpeta de registros)'),
+  'current-generation-absent': tr('当前引擎日志不在场（引擎未启动）', 'The current engine log is absent (engine stopped)', 'El registro actual del motor no está presente (motor detenido)'),
+  preserved: tr('属保留项', 'Kept on purpose', 'Elemento conservado a propósito'),
+  'scope-rejected': tr('越出白名单作用域（已拒绝）', 'Outside the allowlist; refused', 'Fuera del alcance de la lista permitida (rechazado)'),
+  vanished: tr('执行前已消失', 'Already gone before it ran', 'Ya había desaparecido antes de ejecutarse'),
+  aborted: tr('被执行中断跳过', 'Skipped because the run was interrupted', 'Omitido porque la ejecución se interrumpió'),
   // 执行期失败：原因是稳定码，OS 错误串在 `detail` 里（只进 data-detail）。
-  'remove-failed': tr('删除失败（文件被占用、只读或权限不足）', 'Delete failed (in use, read-only, or not permitted)'),
+  'remove-failed': tr('删除失败（文件被占用、只读或权限不足）', 'Delete failed (in use, read-only, or not permitted)', 'Falló el borrado (archivo en uso, de solo lectura o sin permiso)'),
 }
 
 /**
@@ -87,8 +87,8 @@ const SKIP_LABEL: Record<string, string> = {
  */
 function describe(item: CacheItem): string {
   const reason = item.reason ?? ''
-  if (reason === '') return tr('原因未记录', 'No reason recorded')
-  return SKIP_LABEL[reason] ?? tr('原因未在本版登记（可复制日志反馈）', 'This reason is not listed yet; copy the log and report it')
+  if (reason === '') return tr('原因未记录', 'No reason recorded', 'Sin motivo registrado')
+  return SKIP_LABEL[reason] ?? tr('原因未在本版登记（可复制日志反馈）', 'This reason is not listed yet; copy the log and report it', 'Este motivo aún no está registrado en esta versión (copia el registro y repórtalo)')
 }
 
 /**
@@ -147,10 +147,10 @@ export function RuntimeCacheRow() {
       const payload = (await response.json().catch(() => null)) as CacheReport | null
       setReport(payload)
       if (payload === null) {
-        setMessage({ text: tr('清理结果无法解析（响应不是预期的数据）——请重试；仍失败可复制日志反馈', 'The result could not be read. Retry, or copy the log and report it.') })
+        setMessage({ text: tr('清理结果无法解析（响应不是预期的数据）——请重试；仍失败可复制日志反馈', 'The result could not be read. Retry, or copy the log and report it.', 'No se pudo leer el resultado de la limpieza (la respuesta no son los datos esperados); reintenta, o copia el registro y repórtalo') })
       }
     } catch {
-      setMessage({ text: tr('清理请求失败（仅安卓应用内有此能力）——请确认在本机应用内操作', 'Clearing is only available inside the Android app.') })
+      setMessage({ text: tr('清理请求失败（仅安卓应用内有此能力）——请确认在本机应用内操作', 'Clearing is only available inside the Android app.', 'La limpieza solo está disponible dentro de la app Android; confirma que operas dentro de la app del equipo') })
     } finally {
       setBusy(false)
       void refresh()
@@ -169,23 +169,23 @@ export function RuntimeCacheRow() {
           {scanState === 'ok'
             ? (reclaimable > 0
               // 真值：读到了，且有可回收体积。
-              ? tr('运行时缓存可回收：', 'Runtime cache reclaimable: ') + fmtBytes(reclaimable) + tr('（', ' (') + String(targets.length) + tr(' 项）', ' items)')
+              ? tr('运行时缓存可回收：', 'Runtime cache reclaimable: ', 'Caché del runtime recuperable: ') + fmtBytes(reclaimable) + tr('（', ' (', ' (') + String(targets.length) + tr(' 项）', ' items)', ' ítems)')
               // 真值：读到了，确实没有可清理项（这才是合法的空态）。
-              : tr('运行时缓存：暂无可清理项（本版白名单内没有残留）', 'Runtime cache: nothing to clear (the allowlist found no leftovers)'))
-            : tr('运行时缓存可回收：读不到（不是 0——应用内的读取通道不可用或返回异常）', 'Runtime cache could not be read, so this is not zero: the app bridge is unavailable or returned an error')}
+              : tr('运行时缓存：暂无可清理项（本版白名单内没有残留）', 'Runtime cache: nothing to clear (the allowlist found no leftovers)', 'Caché del runtime: nada que limpiar (la lista permitida de esta versión no tiene residuos)'))
+            : tr('运行时缓存可回收：读不到（不是 0——应用内的读取通道不可用或返回异常）', 'Runtime cache could not be read, so this is not zero: the app bridge is unavailable or returned an error', 'La caché del runtime no se pudo leer, así que esto no es cero: el canal de lectura dentro de la app no está disponible o respondió mal')}
         </span>
         <button
           type="button"
           className="dsh-dev-btn"
           disabled={busy}
           onClick={() => { void refresh() }}
-        >{tr('重新扫描', 'Scan again')}</button>
+        >{tr('重新扫描', 'Scan again', 'Escanear de nuevo')}</button>
         <button
           type="button"
           className="dsh-dev-btn dsh-dev-danger"
           disabled={busy || scanState !== 'ok' || reclaimable === 0}
           onClick={() => { setConfirming(true) }}
-        >{busy ? tr('清理中…', 'Clearing…') : tr('清理', 'Clear')}</button>
+        >{busy ? tr('清理中…', 'Clearing…', 'Limpiando…') : tr('清理', 'Clear', 'Limpiar')}</button>
       </div>
 
       {/* S3-16（设备实测补正）：读不到时**不得**继续展示上一次的清单——那会让「读不到」的头部
@@ -195,7 +195,7 @@ export function RuntimeCacheRow() {
           {targets.map((item) => (
             <li key={item.label ?? item.id}>
               {item.label ?? item.id} — {fmtBytes(typeof item.bytes === 'number' ? item.bytes : 0)}
-              {typeof item.files === 'number' ? tr('（', ' (') + String(item.files) + tr(' 项）', ' items)') : ''}
+              {typeof item.files === 'number' ? tr('（', ' (', ' (') + String(item.files) + tr(' 项）', ' items)', ' ítems)') : ''}
             </li>
           ))}
         </ul>
@@ -205,16 +205,16 @@ export function RuntimeCacheRow() {
       <p className="dsh-dev-hint">
         {tr(
           '只按清单清理。图片距上次主动读取满120分钟可手动回收；不清理仍可用，清理后显示占位。会话文字、文件附件、凭据、设置、插件和当前日志保留。',
-          'Only listed items are cleared. Images idle for 120 minutes can be cleared manually. They remain usable until you clear them, then become placeholders. Text history, file attachments, credentials, settings, plugins and the current log are kept.',
+          'Only listed items are cleared. Images idle for 120 minutes can be cleared manually. They remain usable until you clear them, then become placeholders. Text history, file attachments, credentials, settings, plugins and the current log are kept.', 'Solo se limpia lo que está en la lista. Las imágenes sin lectura activa durante 120 minutos se pueden limpiar a mano; siguen utilizables hasta limpiarlas y después se muestran como texto de relleno. El historial de texto, los archivos adjuntos, las credenciales, los ajustes, los complementos y el registro actual se conservan.',
         )}
       </p>
 
       {skipped.length > 0 && (
         <details className="dsh-dev-hint">
-          <summary>{tr('跳过 ', 'Skipped ')}{skipped.length}{tr(' 项（未识别/保留）', ' items (unknown or kept)')}</summary>
+          <summary>{tr('跳过 ', 'Skipped ', 'Omitidos ')}{skipped.length}{tr(' 项（未识别/保留）', ' items (unknown or kept)', ' ítems (no reconocidos/conservados)')}</summary>
           <ul className="dsh-dev-cache-list">
             {skipped.map((item) => (
-              <li key={item.label ?? item.id}>{item.label ?? item.id}{tr('：', ': ')}{describe(item)}</li>
+              <li key={item.label ?? item.id}>{item.label ?? item.id}{tr('：', ': ', ': ')}{describe(item)}</li>
             ))}
           </ul>
         </details>
@@ -227,9 +227,9 @@ export function RuntimeCacheRow() {
       {report !== null && (
         <div>
           <p className="dsh-dev-hint">
-            {tr('已清理 ', 'Cleared ')}{String(report.removed ?? 0)}{tr(' 项，释放 ', ' items and freed ')}{fmtBytes(typeof report.removedBytes === 'number' ? report.removedBytes : 0)}
-            {tr('（扫描值 ', ' (scanned ')}{fmtBytes(typeof report.plannedBytes === 'number' ? report.plannedBytes : 0)}{tr('）', ')')}
-            {typeof report.failed === 'number' && report.failed > 0 ? tr('；', '; ') + String(report.failed) + tr(' 项失败', ' failed') : ''}
+            {tr('已清理 ', 'Cleared ', 'Limpiados ')}{String(report.removed ?? 0)}{tr(' 项，释放 ', ' items and freed ', ' ítems y liberados ')}{fmtBytes(typeof report.removedBytes === 'number' ? report.removedBytes : 0)}
+            {tr('（扫描值 ', ' (scanned ', ' (valor escaneado ')}{fmtBytes(typeof report.plannedBytes === 'number' ? report.plannedBytes : 0)}{tr('）', ')', ')')}
+            {typeof report.failed === 'number' && report.failed > 0 ? tr('；', '; ', '; ') + String(report.failed) + tr(' 项失败', ' failed', ' fallidos') : ''}
           </p>
           <ul className="dsh-dev-cache-list">
             {items.map((item) => (
@@ -238,9 +238,9 @@ export function RuntimeCacheRow() {
                 {...(item.reason === undefined || item.reason === '' ? {} : { 'data-reason': item.reason })}
                 {...(item.detail === undefined || item.detail === '' ? {} : { 'data-detail': item.detail })}
               >
-                {item.label ?? item.id} — {item.status === 'removed' ? tr('已删除 ', 'removed ') + fmtBytes(typeof item.bytes === 'number' ? item.bytes : 0)
-                  : item.status === 'failed' ? tr('失败：', 'failed: ') + describe(item)
-                    : tr('跳过：', 'skipped: ') + describe(item)}
+                {item.label ?? item.id} — {item.status === 'removed' ? tr('已删除 ', 'removed ', 'eliminados ') + fmtBytes(typeof item.bytes === 'number' ? item.bytes : 0)
+                  : item.status === 'failed' ? tr('失败：', 'failed: ', 'fallidos: ') + describe(item)
+                    : tr('跳过：', 'skipped: ', 'omitidos: ') + describe(item)}
               </li>
             ))}
           </ul>
@@ -252,15 +252,15 @@ export function RuntimeCacheRow() {
           className="dsh-dev-modal-overlay"
           role="dialog"
           aria-modal="true"
-          aria-label={tr('确认清除运行时缓存', 'Confirm clearing the runtime cache')}
+          aria-label={tr('确认清除运行时缓存', 'Confirm clearing the runtime cache', 'Confirmar la limpieza de la caché del runtime')}
           onClick={() => { setConfirming(false) }}
         >
           <div className="dsh-dev-modal" role="document" onClick={(event) => { event.stopPropagation() }}>
-            <p className="dsh-dev-modal-title">{tr('确认清除运行时缓存？', 'Clear the runtime cache?')}</p>
+            <p className="dsh-dev-modal-title">{tr('确认清除运行时缓存？', 'Clear the runtime cache?', '¿Limpiar la caché del runtime?')}</p>
             {/* 不可逆操作的后果说明必须保留：删哪几项、哪些不受影响、失败项如何处理。 */}
             <p className="dsh-dev-modal-desc">
-              {tr('删除以下 ', 'Delete these ')}{targets.length}{tr(' 项，共 ', ' items, ')}{fmtBytes(reclaimable)}
-              {tr('，无法恢复。清理的图片会替换为占位文字；会话文字、文件附件、凭据、设置、插件与当前日志保留。失败项会列出。', ', with no undo. Cleared images become text placeholders. Text history, file attachments, credentials, settings, plugins and the current log are kept. Failures are listed.')}
+              {tr('删除以下 ', 'Delete these ', 'Borrar estos ')}{targets.length}{tr(' 项，共 ', ' items, ', ' ítems, ')}{fmtBytes(reclaimable)}
+              {tr('，无法恢复。清理的图片会替换为占位文字；会话文字、文件附件、凭据、设置、插件与当前日志保留。失败项会列出。', ', with no undo. Cleared images become text placeholders. Text history, file attachments, credentials, settings, plugins and the current log are kept. Failures are listed.', ', sin deshacer. Las imágenes limpiadas se reemplazan por texto de relleno; el historial de texto, los archivos adjuntos, las credenciales, los ajustes, los complementos y el registro actual se conservan. Los fallos se listan.')}
             </p>
             <ul className="dsh-dev-cache-list">
               {targets.map((item) => (
@@ -268,8 +268,8 @@ export function RuntimeCacheRow() {
               ))}
             </ul>
             <div className="dsh-dev-modal-actions">
-              <button type="button" className="dsh-dev-btn" autoFocus onClick={() => { setConfirming(false) }}>{tr('取消', 'Cancel')}</button>
-              <button type="button" className="dsh-dev-btn dsh-dev-danger" onClick={() => { void run() }}>{tr('清理', 'Clear')}</button>
+              <button type="button" className="dsh-dev-btn" autoFocus onClick={() => { setConfirming(false) }}>{tr('取消', 'Cancel', 'Cancelar')}</button>
+              <button type="button" className="dsh-dev-btn dsh-dev-danger" onClick={() => { void run() }}>{tr('清理', 'Clear', 'Limpiar')}</button>
             </div>
           </div>
         </div>

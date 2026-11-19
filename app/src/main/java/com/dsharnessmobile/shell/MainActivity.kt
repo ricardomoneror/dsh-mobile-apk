@@ -350,7 +350,7 @@ class MainActivity : ComponentActivity() {
     if (isFinishing || isDestroyed) return
     if (!RepairState.beginUserRetry(this)) {
       applyGuidePhase(GuidePhase.Error, UiText.t(this,
-        "无法保存重试状态，请重试。", "Could not save retry state. Please try again."))
+        "无法保存重试状态，请重试。", "Could not save retry state. Please try again.", "No se pudo guardar el estado de reintento. Inténtalo de nuevo."))
       return
     }
     engineFlow.engineRetryCount = 0
@@ -371,10 +371,10 @@ class MainActivity : ComponentActivity() {
   private fun applyRepairRequiredGuide() {
     applyGuidePhase(
       GuidePhase.Error,
-      UiText.t(this, "引擎仍无法启动", "The engine still will not start"),
+      UiText.t(this, "引擎仍无法启动", "The engine still will not start", "El motor aún no arranca"),
       UiText.t(this,
         "自动重试已用完。可先重试引擎；若仍有问题，再打开修复助手读取诊断。",
-        "Automatic retries are used up. Retry the engine first; open the repair assistant only if it still fails."),
+        "Automatic retries are used up. Retry the engine first; open the repair assistant only if it still fails.", "Los reintentos automáticos se agotaron. Primero reintenta el motor; si sigue fallando, abre el asistente de reparación para leer el diagnóstico."),
     )
   }
 
@@ -439,8 +439,8 @@ class MainActivity : ComponentActivity() {
       if (!pageRecovery.claimLoadErrorRetry()) {
         applyGuidePhase(
           GuidePhase.Error,
-          UiText.t(this, "页面加载失败", "Page failed to load"),
-          UiText.t(this, "前台自动重试后仍未恢复；可手动刷新界面或打开日志排查，不会循环重载。", "Automatic retry in the foreground did not recover it. Refresh manually or open the log; the page will not reload in a loop."),
+          UiText.t(this, "页面加载失败", "Page failed to load", "Error al cargar la página"),
+          UiText.t(this, "前台自动重试后仍未恢复；可手动刷新界面或打开日志排查，不会循环重载。", "Automatic retry in the foreground did not recover it. Refresh manually or open the log; the page will not reload in a loop.", "El reintento automático en primer plano no lo recuperó. Actualiza manualmente o abre el log; la página no se recargará en bucle."),
         )
         return
       }
@@ -478,7 +478,7 @@ class MainActivity : ComponentActivity() {
   /** Failed plugin ids in the active language; the hint template owns the surrounding sentence. */
   private fun clientPluginFailureReason(): String {
     val ids = engineFlow.clientPluginFailureIds
-    if (ids.isEmpty()) return UiText.t(this, "未点名具体条目", "unnamed entries")
+    if (ids.isEmpty()) return UiText.t(this, "未点名具体条目", "unnamed entries", "entradas sin nombrar")
     return UiText.t(this, "条目 " + ids.joinToString(","), "entries " + ids.joinToString(","))
   }
 
@@ -542,8 +542,8 @@ class MainActivity : ComponentActivity() {
         showGuide()
         applyGuidePhase(
           GuidePhase.Error,
-          UiText.t(this, "页面渲染失败", "Page failed to render"),
-          UiText.t(this, "自动重建已尝试一次；请在此手动重试或查看日志，不会循环重建页面。", "An automatic rebuild was tried once. Retry here or check the log; the page will not be rebuilt in a loop."),
+          UiText.t(this, "页面渲染失败", "Page failed to render", "Error al renderizar la página"),
+          UiText.t(this, "自动重建已尝试一次；请在此手动重试或查看日志，不会循环重建页面。", "An automatic rebuild was tried once. Retry here or check the log; the page will not be rebuilt in a loop.", "La reconstrucción automática se intentó una vez; reintenta aquí manualmente o revisa el log; la página no se reconstruirá en bucle."),
         )
         true // onResume must not access the dead WebView after exposing the native recovery outlet.
       }
@@ -850,7 +850,7 @@ class MainActivity : ComponentActivity() {
     try {
       android.widget.Toast.makeText(
         this,
-        UiText.t(this, "已返回 DeepCode，正在完成账号连接…", "Back in DeepCode. Finishing the account connection…"),
+        UiText.t(this, "已返回 DeepCode，正在完成账号连接…", "Back in DeepCode. Finishing the account connection…", "De vuelta en DeepCode; terminando la conexión de la cuenta…"),
         Toast.LENGTH_SHORT,
       ).show()
     } catch (_: Throwable) {
@@ -902,7 +902,7 @@ class MainActivity : ComponentActivity() {
       try {
         Toast.makeText(
           this,
-          UiText.t(this, "无法打开对应的会话（可能已被删除）——请从会话列表手动选择", "Could not open that session (it may have been deleted). Pick it from the session list."),
+          UiText.t(this, "无法打开对应的会话（可能已被删除）——请从会话列表手动选择", "Could not open that session (it may have been deleted). Pick it from the session list.", "No se pudo abrir esa sesión (puede haberse eliminado). Selecciónala desde la lista de sesiones."),
           Toast.LENGTH_LONG,
         ).show()
       } catch (_: Throwable) {
@@ -2223,7 +2223,7 @@ class MainActivity : ComponentActivity() {
       UiText.t(
         this,
         "无法打开系统设置，请手动前往 系统设置 → 无障碍",
-        "Could not open system settings. Open Settings > Accessibility manually.",
+        "Could not open system settings. Open Settings > Accessibility manually.", "No se pudo abrir los ajustes del sistema. Ve manualmente a Ajustes → Accesibilidad"
       ),
       Toast.LENGTH_LONG,
     ).show()

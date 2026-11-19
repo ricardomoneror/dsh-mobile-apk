@@ -167,57 +167,57 @@ interface RowView {
  * @returns 文本与两枚按钮的文案/可点性。
  */
 function viewOf(state: string, status: ApkUpdateStatus): RowView {
-  const checkOnly = (text: string, checkEnabled: boolean, checkLabel = tr('检查更新', 'Check for updates')): RowView =>
+  const checkOnly = (text: string, checkEnabled: boolean, checkLabel = tr('检查更新', 'Check for updates', 'Buscar actualizaciones')): RowView =>
     ({ text, checkLabel, installLabel: null, checkEnabled, installEnabled: false, detail: null })
   switch (state) {
     case 'checking':
-      return checkOnly(tr('正在查询最新版本…', 'Looking up the latest version…'), false, tr('检查中…', 'Checking…'))
+      return checkOnly(tr('正在查询最新版本…', 'Looking up the latest version…', 'Buscando la versión más reciente…'), false, tr('检查中…', 'Checking…', 'Comprobando…'))
     case 'up-to-date':
-      return checkOnly(tr('APK 已是最新 ', 'APK is up to date ') + (status.version ?? ''), true, tr('重新检查', 'Check again'))
+      return checkOnly(tr('APK 已是最新 ', 'APK is up to date ', 'El APK está actualizado ') + (status.version ?? ''), true, tr('重新检查', 'Check again', 'Volver a comprobar'))
     case 'available':
       return {
-        text: tr('发现新版 ', 'New version ') + (status.tag ?? '') +
+        text: tr('发现新版 ', 'New version ', 'Versión nueva ') + (status.tag ?? '') +
           (status.current === undefined
             ? ''
-            : tr('（当前 v', ' (current v') + status.current + tr('，', ', ') + fmtBytes(status.sizeBytes ?? 0) + tr('）', ')')) +
-          tr('——资产 ', ' — asset ') + (status.name ?? ''),
+            : tr('（当前 v', ' (current v', ' (v actual ') + status.current + tr('，', ', ', ', ') + fmtBytes(status.sizeBytes ?? 0) + tr('）', ')', ')')) +
+          tr('——资产 ', ' — asset ', ' — recurso ') + (status.name ?? ''),
         // 检查按钮禁用：beginCheck() 会清掉已发现的新版载荷，此刻再检查等于丢掉可下载的包。
-        checkLabel: tr('检查更新', 'Check for updates'),
+        checkLabel: tr('检查更新', 'Check for updates', 'Buscar actualizaciones'),
         checkEnabled: false,
-        installLabel: tr('下载并安装 ', 'Download and install ') + (status.tag ?? ''),
+        installLabel: tr('下载并安装 ', 'Download and install ', 'Descargar e instalar ') + (status.tag ?? ''),
         installEnabled: true,
         // 摘要口径：这是**发布方声明的值**（壳侧下载后拿它比对），不是「本机已校验通过」。
         // 本次发布没给摘要就如实说没给——留空会让用户以为校验过了。
         detail: status.sha256 === undefined
-          ? tr('本次发布未提供 sha256 摘要：安装包仍会按体积核对，但没有摘要可比对', 'This release provides no sha256 digest, so the package is only size-checked.')
-          : tr('发布方声明的 sha256（下载后按它比对）：', 'sha256 declared by the release (checked after download): ') + status.sha256.slice(0, 12) + '…',
+          ? tr('本次发布未提供 sha256 摘要：安装包仍会按体积核对，但没有摘要可比对', 'This release provides no sha256 digest, so the package is only size-checked.', 'Esta versión no entrega resumen sha256; el paquete solo se verifica por tamaño')
+          : tr('发布方声明的 sha256（下载后按它比对）：', 'sha256 declared by the release (checked after download): ', 'sha256 declarado por la versión (se comprueba tras la descarga): ') + status.sha256.slice(0, 12) + '…',
       }
     case 'downloading':
       return {
-        text: tr('正在从镜像链下载 ', 'Downloading ') + (status.name ?? '') +
-          (status.sizeBytes === undefined ? '' : tr('（', ' (') + fmtBytes(status.sizeBytes) + tr('）', ')')) +
-          tr('——请保持应用在前台', ' — keep the app in the foreground'),
-        checkLabel: tr('检查更新', 'Check for updates'),
+        text: tr('正在从镜像链下载 ', 'Downloading ', 'Descargando desde la cadena de espejos ') + (status.name ?? '') +
+          (status.sizeBytes === undefined ? '' : tr('（', ' (', ' (') + fmtBytes(status.sizeBytes) + tr('）', ')', ')')) +
+          tr('——请保持应用在前台', ' — keep the app in the foreground', ' — mantén la app en primer plano'),
+        checkLabel: tr('检查更新', 'Check for updates', 'Buscar actualizaciones'),
         checkEnabled: false,
-        installLabel: tr('下载中 ', 'Downloading ') + String(status.percent ?? 0) + '%',
+        installLabel: tr('下载中 ', 'Downloading ', 'Descargando ') + String(status.percent ?? 0) + '%',
         installEnabled: false,
         detail: null,
       }
     case 'installing':
       return checkOnly(
-        tr('已拉起系统安装器——安装完成后重新打开应用即生效', 'The system installer is open; reopen the app after installing') +
+        tr('已拉起系统安装器——安装完成后重新打开应用即生效', 'The system installer is open; reopen the app after installing', 'Se abrió el instalador del sistema; vuelve a abrir la app cuando termine la instalación') +
           (status.reused === true
-            ? tr('（本次复用了上次已下载并校验通过的安装包，未重复下载）', ' (the previously downloaded and verified package was reused)')
+            ? tr('（本次复用了上次已下载并校验通过的安装包，未重复下载）', ' (the previously downloaded and verified package was reused)', ' (se reutilizó el paquete ya descargado y verificado de la vez anterior)')
             : ''),
         true,
-        tr('重新检查', 'Check again'),
+        tr('重新检查', 'Check again', 'Volver a comprobar'),
       )
     case 'need-permission':
       return {
-        text: tr('需要「安装未知应用」权限（壳侧已打开授权页）——开启后返回应用即可续继安装', 'Install-unknown-apps permission is required; the settings page is open. Return after granting to continue.'),
-        checkLabel: tr('检查更新', 'Check for updates'),
+        text: tr('需要「安装未知应用」权限（壳侧已打开授权页）——开启后返回应用即可续继安装', 'Install-unknown-apps permission is required; the settings page is open. Return after granting to continue.', 'Se necesita el permiso «Instalar apps desconocidas» (el puente ya abrió la página de autorización); vuelve tras conceder para continuar la instalación'),
+        checkLabel: tr('检查更新', 'Check for updates', 'Buscar actualizaciones'),
         checkEnabled: false,
-        installLabel: tr('授权后继续安装', 'Continue after granting'),
+        installLabel: tr('授权后继续安装', 'Continue after granting', 'Continuar tras conceder'),
         installEnabled: true,
         detail: null,
       }
@@ -228,16 +228,16 @@ function viewOf(state: string, status: ApkUpdateStatus): RowView {
       const ready = status.hasReadyArtifact === true
       return {
         // 失败原因原样展示：壳侧 reason 已是成句中文且按类归因，翻译会丢掉它想传达的那一档。
-        text: status.reason ?? tr('更新未完成（壳侧未给出原因，可复制日志反馈）', 'The update did not finish; copy the log and report it.'),
-        checkLabel: tr('重试', 'Retry'),
+        text: status.reason ?? tr('更新未完成（壳侧未给出原因，可复制日志反馈）', 'The update did not finish; copy the log and report it.', 'La actualización no terminó (el puente no dio motivo; puedes copiar el registro y reportarlo)'),
+        checkLabel: tr('重试', 'Retry', 'Reintentar'),
         checkEnabled: true,
-        installLabel: ready ? tr('重试安装', 'Retry install') : null,
+        installLabel: ready ? tr('重试安装', 'Retry install', 'Reintentar instalación') : null,
         installEnabled: ready,
         detail: null,
       }
     }
     default:
-      return checkOnly(tr('运行时与安装包状态未检查', 'Runtime and APK status not checked'), true)
+      return checkOnly(tr('运行时与安装包状态未检查', 'Runtime and APK status not checked', 'Estado del runtime y del APK sin comprobar'), true)
   }
 }
 
@@ -268,15 +268,15 @@ export function ApkUpdateRow() {
     setMessage(null)
     const accepted = invoke(action)
     if (accepted === null) {
-      setMessage({ text: tr('更新通道不可用（仅安卓应用内有此能力）——请确认在本机应用内操作', 'Updates are only available inside the Android app.') })
+      setMessage({ text: tr('更新通道不可用（仅安卓应用内有此能力）——请确认在本机应用内操作', 'Updates are only available inside the Android app.', 'Las actualizaciones solo están disponibles dentro de la app Android; confirma que operas dentro de la app del equipo') })
       return
     }
     // ok 只表达受理；真正的进展由轮询读回。busy 时壳侧会回 ok:false + code:busy，如实说。
     if (accepted.ok !== true) {
       setMessage({
         text: accepted.code === 'busy'
-          ? tr('上一次更新动作仍在进行中，请稍候（进度见上方）', 'The previous update is still running; the progress is shown above.')
-          : tr('这次请求未被受理：', 'The request was not accepted: ') + (accepted.reason ?? tr('可稍后重试', 'try again later')),
+          ? tr('上一次更新动作仍在进行中，请稍候（进度见上方）', 'The previous update is still running; the progress is shown above.', 'La acción de actualización anterior sigue en curso; espera (el avance está arriba)')
+          : tr('这次请求未被受理：', 'The request was not accepted: ', 'Esta solicitud no fue aceptada: ') + (accepted.reason ?? tr('可稍后重试', 'try again later', 'reintenta más tarde')),
         ...(accepted.code === undefined ? {} : { code: accepted.code }),
       })
     }
@@ -290,8 +290,8 @@ export function ApkUpdateRow() {
     // 桥缺席/不可解析：措辞纪律不得在同一行里同时出现「读不到」与「已是最新」（那会让判读自相矛盾），
     // 也不得渲染成 idle。这里只说清「无法判断」，不引任何终态词。
     ? {
-        text: tr('更新状态：读不到——无法判断是否有新版本（应用内的更新通道不可用或返回异常）', 'Update status could not be read, so a new version cannot be ruled in or out.'),
-        checkLabel: tr('检查更新', 'Check for updates'),
+        text: tr('更新状态：读不到——无法判断是否有新版本（应用内的更新通道不可用或返回异常）', 'Update status could not be read, so a new version cannot be ruled in or out.', 'No se pudo leer el estado de actualización; no se puede saber si hay versión nueva (el canal de actualización dentro de la app no está disponible o respondió mal)'),
+        checkLabel: tr('检查更新', 'Check for updates', 'Buscar actualizaciones'),
         checkEnabled: true,
         installLabel: null,
         installEnabled: false,
@@ -303,7 +303,7 @@ export function ApkUpdateRow() {
     <div data-plugin="dev-apk-update">
       <div className="dsh-gs-row" data-apk-state={status === null ? 'unavailable' : state}>
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('检查更新', 'Check for updates')}</div>
+          <div className="dsh-gs-title">{tr('检查更新', 'Check for updates', 'Buscar actualizaciones')}</div>
           <div className="dsh-gs-desc">{row.text}</div>
           {row.detail !== null && <div className="dsh-gs-desc" data-apk-detail>{row.detail}</div>}
           {message !== null && (
@@ -334,7 +334,7 @@ export function ApkUpdateRow() {
       <div className="dsh-gs-row">
         <div className="dsh-gs-text">
           <div className="dsh-gs-desc">
-            {tr('更新应用安装包（APK）：按本机 ABI 从 GitHub 发布页取包，校验体积与 sha256 后交给系统安装器。只在你点击时下载；缺「安装未知应用」权限会先打开授权页。', 'Updates the app APK: the matching ABI comes from the GitHub release, and its size and sha256 are verified before the system installer opens. Downloads start only when you tap; a missing install permission opens the grant page first.')}
+            {tr('更新应用安装包（APK）：按本机 ABI 从 GitHub 发布页取包，校验体积与 sha256 后交给系统安装器。只在你点击时下载；缺「安装未知应用」权限会先打开授权页。', 'Updates the app APK: the matching ABI comes from the GitHub release, and its size and sha256 are verified before the system installer opens. Downloads start only when you tap; a missing install permission opens the grant page first.', 'Actualiza el APK de la app: el paquete según el ABI del equipo se obtiene de la página de releases de GitHub y se verifican el tamaño y el sha256 antes de entregarlo al instalador del sistema. Solo descarga cuando lo tocas; si falta el permiso «Instalar apps desconocidas», primero abre la página de autorización.')}
           </div>
         </div>
       </div>
@@ -357,8 +357,8 @@ export function ApkUpdateSection(_props: PropsRuntime<'settings.section'>) {
     <section className="dsh-screen-control-card" aria-labelledby="dsh-apk-update-title">
       <header className="dsh-screen-control-header">
         <span>
-          <strong id="dsh-apk-update-title">{tr('应用更新', 'App updates')}</strong>
-          <small>{tr('检查是否有新版安装包，并在此下载安装；只在你点击时才发起。', 'Check for a newer APK and install it here; nothing starts until you tap.')}</small>
+          <strong id="dsh-apk-update-title">{tr('应用更新', 'App updates', 'Actualizaciones de la app')}</strong>
+          <small>{tr('检查是否有新版安装包，并在此下载安装；只在你点击时才发起。', 'Check for a newer APK and install it here; nothing starts until you tap.', 'Comprueba si hay un APK más nuevo y descárgalo e instala aquí; nada parte hasta que lo toques.')}</small>
         </span>
       </header>
       <ApkUpdateRow />

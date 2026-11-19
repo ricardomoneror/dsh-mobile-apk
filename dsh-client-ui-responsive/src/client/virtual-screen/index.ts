@@ -38,8 +38,18 @@ function isEnglish(): boolean {
   }
 }
 
-/** Chinese or English copy for the active page language. */
-function tr(zh: string, en: string): string {
+/** True when the dsh page language is Spanish. */
+function isSpanish(): boolean {
+  try {
+    return document.documentElement.lang.toLowerCase().startsWith('es')
+  } catch {
+    return false
+  }
+}
+
+/** Chinese, English, or Spanish (only when the caller supplies it) copy for the active page language. */
+function tr(zh: string, en: string, es?: string): string {
+  if (es !== undefined && isSpanish()) return es
   return isEnglish() ? en : zh
 }
 
@@ -144,7 +154,7 @@ export function readNativePanelState(bridge: NativeVdisplayBridge | undefined): 
     state: 'blocked',
     code: VD_STATUS_UNAVAILABLE,
     detail: tr('虚拟屏状态不可达：原生桥未提供 vdisplayStatus（fail-closed）。',
-      'Virtual-screen status unavailable: the native bridge exposes no vdisplayStatus (fail-closed).'),
+      'Virtual-screen status unavailable: the native bridge exposes no vdisplayStatus (fail-closed).', 'Estado de la pantalla virtual no disponible: el puente nativo no expone vdisplayStatus (fail-closed).'),
     ops: [...VD_OPS],
     screens: [],
     viewers: [],
@@ -237,7 +247,7 @@ function VdPanel(props: { sessionId?: unknown }): ReactElement {
   const stageRef = useRef<HTMLDivElement>(null)
   const [snap, setSnap] = useState<VdPanelState>({
   state: 'blocked', code: VD_STATUS_UNAVAILABLE,
-  detail: tr('正在读取状态…', 'Reading status...'), ops: [...VD_OPS], screens: [], viewers: [],
+  detail: tr('正在读取状态…', 'Reading status...', 'Leyendo el estado...'), ops: [...VD_OPS], screens: [], viewers: [],
   })
   const [tick, setTick] = useState(0)
   const occupied = snap.ownerSessionId !== undefined && sessionKey !== '' && snap.ownerSessionId !== sessionKey
@@ -418,19 +428,19 @@ function VdPanel(props: { sessionId?: unknown }): ReactElement {
   const stageHint = screens.length === 0 || presenting
     ? ''
     : snap.state === 'active'
-      ? tr('尚未在虚拟屏上显示内容', 'Nothing is showing on the virtual screen yet')
-      : tr('状态不可用，画面未连接', 'Status unavailable — picture not connected')
+      ? tr('尚未在虚拟屏上显示内容', 'Nothing is showing on the virtual screen yet', 'Todavía no se muestra nada en la pantalla virtual')
+      : tr('状态不可用，画面未连接', 'Status unavailable — picture not connected', 'Estado no disponible: imagen sin conectar')
 
   if (occupied) {
     return createElement('div', { className: 'dsh-vdisplay-panel', 'data-state': snap.state },
       createElement('p', { className: 'dsh-vdisplay-empty' },
-        tr('由会话 ', 'In use by session ') + String(snap.ownerSessionId ?? '').slice(-6)
-          + tr(' 使用中', ' in use')))
+        tr('由会话 ', 'In use by session ', 'En uso por la sesión ') + String(snap.ownerSessionId ?? '').slice(-6)
+          + tr(' 使用中', ' in use', ' en uso')))
   }
 
   return createElement('div', { className: 'dsh-vdisplay-panel', 'data-state': snap.state },
     screens.length === 0
-      ? createElement('p', { className: 'dsh-vdisplay-empty' }, detailText !== '' ? detailText : tr('暂无虚拟屏', 'No virtual screens'))
+      ? createElement('p', { className: 'dsh-vdisplay-empty' }, detailText !== '' ? detailText : tr('暂无虚拟屏', 'No virtual screens', 'Sin pantallas virtuales'))
       : createElement('div', { className: 'dsh-vdisplay-list' },
         screens.map((screen) => createElement('button', {
           key: screen.alias,
@@ -445,11 +455,11 @@ function VdPanel(props: { sessionId?: unknown }): ReactElement {
           key: '__shutdown__',
           type: 'button',
           className: 'dsh-vdisplay-item dsh-vdisplay-shutdown',
-          'aria-label': tr('关闭全部虚拟屏', 'Close all virtual screens'),
-          title: tr('关闭全部虚拟屏（释放系统资源）', 'Close all virtual screens (frees system resources)'),
+          'aria-label': tr('关闭全部虚拟屏', 'Close all virtual screens', 'Cerrar todas las pantallas virtuales'),
+          title: tr('关闭全部虚拟屏（释放系统资源）', 'Close all virtual screens (frees system resources)', 'Cerrar todas las pantallas virtuales (libera recursos del sistema)'),
           'data-action': 'shutdown-all',
           onClick: shutdownAll,
-        }, tr('关闭全部', 'Close all'))),
+        }, tr('关闭全部', 'Close all', 'Cerrar todas'))),
     screens.length > 0 && detailText !== ''
       ? createElement('p', { className: 'dsh-vdisplay-detail' }, detailText)
       : null,
@@ -466,7 +476,7 @@ function VdPanel(props: { sessionId?: unknown }): ReactElement {
 
 /** chip 标题：与「工作区文件」同类。 */
 function VdTitle(): ReactElement {
-  return createElement('span', { className: 'dsh-vdisplay-title' }, tr('虚拟屏', 'Virtual screen'))
+  return createElement('span', { className: 'dsh-vdisplay-title' }, tr('虚拟屏', 'Virtual screen', 'Pantalla virtual'))
 }
 
 /**
@@ -596,15 +606,15 @@ export function apply(ctx: ClientContext): void {
       id: VD_TAB_ID,
       kind: VD_TAB_KIND,
       priority: 'extension',
-    title: () => tr('虚拟屏', 'Virtual screen'),
+    title: () => tr('虚拟屏', 'Virtual screen', 'Pantalla virtual'),
       guide: [{
         // 0.1.7 起 guide 条目必填 id（上游按 [providerId, entry.id] 键控，唯一性只在 provider 内判定）
         id: 'open',
         order: 40,
         icon: VirtualScreenGlyph,
-    title: () => tr('虚拟屏', 'Virtual screen'),
+    title: () => tr('虚拟屏', 'Virtual screen', 'Pantalla virtual'),
     description: () => tr('在独立屏幕上运行第三方 App（Shizuku 特权通道），不挤占用户前台。',
-      'Run third-party apps on a separate display through Shizuku without taking over the foreground.'),
+      'Run third-party apps on a separate display through Shizuku without taking over the foreground.', 'Ejecuta apps de terceros en una pantalla aparte por el canal privilegiado de Shizuku, sin ocupar el primer plano del usuario.'),
       }],
     })
   }, 'dsh-android-vdisplay: tab type')

@@ -120,6 +120,17 @@ class AppLanguageTest {
   }
 
   @Test
+  fun expectedLocalePassesSpanishThrough() {
+    // fork: espanol es un modo de primera clase; el sistema en es cae a es, no a en.
+    assertEquals("es", AppLanguage.expectedLocale("system", listOf("es-CL", "en-US")))
+    assertEquals("es", AppLanguage.expectedLocale("system", listOf("es-419")))
+    assertEquals("es", AppLanguage.expectedLocale("system", listOf("es")))
+    assertEquals("es", AppLanguage.expectedLocale("es", listOf("en-US")))
+    assertEquals("en", AppLanguage.expectedLocale("system", listOf("ja-JP")))
+    assertEquals("en", AppLanguage.expectedLocale("system", emptyList()))
+  }
+
+  @Test
   fun expectedLocaleTreatsEveryChineseVariantAsChinese() {
     // 启动时按系统语言落 locale：港/台/大陆及带文字变体的 zh-* 都算中文，其余一律英文。
     assertEquals("zh", AppLanguage.expectedLocale("system", listOf("zh-HK")))

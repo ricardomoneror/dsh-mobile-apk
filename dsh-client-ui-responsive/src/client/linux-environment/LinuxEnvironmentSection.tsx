@@ -82,10 +82,10 @@ function fmtBytes(bytes: number): string {
 /** 资产字段 → 用户看得懂的名字。 */
 function fieldLabel(field: string): string {
   switch (field) {
-    case 'runtime-plugin': return tr('运行时插件', 'runtime plugin')
-    case 'backendAsset': return tr('Bionilux 启动器', 'Bionilux launcher')
-    case 'rootfsAsset': return tr('Debian 根文件系统', 'Debian root filesystem')
-    case 'nodeAsset': return tr('共享 Node.js', 'shared Node.js')
+    case 'runtime-plugin': return tr('运行时插件', 'runtime plugin', 'complemento de runtime')
+    case 'backendAsset': return tr('Bionilux 启动器', 'Bionilux launcher', 'lanzador Bionilux')
+    case 'rootfsAsset': return tr('Debian 根文件系统', 'Debian root filesystem', 'sistema de archivos raíz Debian')
+    case 'nodeAsset': return tr('共享 Node.js', 'shared Node.js', 'Node.js compartido')
     default: return field
   }
 }
@@ -96,11 +96,11 @@ function failureText(cause: unknown): string {
     if (cause.code === 'linux-asset-bridge-missing') {
       return tr(
         '当前宿主没有提供资产准备通道——请在本机应用内打开设置后重试。',
-        'This host has no asset-preparation channel. Open Settings inside the Android app and retry.',
+        'This host has no asset-preparation channel. Open Settings inside the Android app and retry.', 'Este host no tiene canal de preparación de recursos; abre Ajustes dentro de la app Android y reintenta.',
       )
     }
     const detail = cause.detail !== '' ? '（' + cause.detail + '）' : ''
-    return tr('准备下载资产失败：', 'Preparing the download failed: ') + cause.message + detail
+    return tr('准备下载资产失败：', 'Preparing the download failed: ', 'Falló la preparación de la descarga: ') + cause.message + detail
   }
   if (cause instanceof RouteError) {
     // 宿主的 detail 是唯一能说明「为什么」的字段；把它一起显示，避免用户只拿到一句
@@ -113,30 +113,30 @@ function failureText(cause: unknown): string {
 /** 引擎忙碌时的一句话（状态轮询回来时用）。 */
 function operationText(operation: string | undefined): string {
   switch (operation) {
-    case 'checking': return tr('正在检查更新…', 'Checking for updates…')
-    case 'automatic-check': return tr('正在自动检查更新…', 'Checking for updates automatically…')
-    case 'installing': return tr('正在安装 Linux 环境…', 'Installing the Linux environment…')
-    case 'reinstalling': return tr('正在重新安装 Linux 环境…', 'Reinstalling the Linux environment…')
-    case 'uninstalling': return tr('正在卸载 Linux 环境…', 'Removing the Linux environment…')
+    case 'checking': return tr('正在检查更新…', 'Checking for updates…', 'Comprobando actualizaciones…')
+    case 'automatic-check': return tr('正在自动检查更新…', 'Checking for updates automatically…', 'Comprobando actualizaciones automáticamente…')
+    case 'installing': return tr('正在安装 Linux 环境…', 'Installing the Linux environment…', 'Instalando el entorno Linux…')
+    case 'reinstalling': return tr('正在重新安装 Linux 环境…', 'Reinstalling the Linux environment…', 'Reinstalando el entorno Linux…')
+    case 'uninstalling': return tr('正在卸载 Linux 环境…', 'Removing the Linux environment…', 'Quitando el entorno Linux…')
     default: return ''
   }
 }
 
 /** 持久化状态 → 一行摘要。 */
 function statusText(status: LinuxStatus | null): string {
-  if (status === null) return tr('正在读取 Linux 环境状态…', 'Reading the Linux environment status…')
+  if (status === null) return tr('正在读取 Linux 环境状态…', 'Reading the Linux environment status…', 'Leyendo el estado del entorno Linux…')
   if (status.installed !== true) {
     return status.updateBlocked === true
-      ? tr('尚未安装 Linux 环境；发现较旧版本，已阻止降级', 'Not installed yet; an older release was found and downgrades are blocked')
-      : tr('尚未安装 Linux 环境', 'The Linux environment is not installed yet')
+      ? tr('尚未安装 Linux 环境；发现较旧版本，已阻止降级', 'Not installed yet; an older release was found and downgrades are blocked', 'El entorno Linux aún no está instalado; se encontró una versión más antigua y la degradación está bloqueada')
+      : tr('尚未安装 Linux 环境', 'The Linux environment is not installed yet', 'El entorno Linux aún no está instalado')
   }
-  const parts = [tr('已安装 Linux 运行时 ', 'Linux runtime ') + (status.version ?? '')]
-  if (status.mobileVersion) parts.push(tr('当前 DSH Mobile ', 'current DSH Mobile ') + status.mobileVersion)
-  if (status.updateAvailable === true) parts.push(tr('可更新至 ', 'update to ') + (status.availableVersion ?? ''))
-  if (status.updateBlocked === true) parts.push(tr('已阻止降级', 'downgrades are blocked'))
-  if (status.injectionActivated === false) parts.push(tr('插件已被移除或停用', 'the plugin was removed or disabled'))
+  const parts = [tr('已安装 Linux 运行时 ', 'Linux runtime ', 'Runtime Linux ') + (status.version ?? '')]
+  if (status.mobileVersion) parts.push(tr('当前 DSH Mobile ', 'current DSH Mobile ', 'DSH Mobile actual ') + status.mobileVersion)
+  if (status.updateAvailable === true) parts.push(tr('可更新至 ', 'update to ', 'actualizable a ') + (status.availableVersion ?? ''))
+  if (status.updateBlocked === true) parts.push(tr('已阻止降级', 'downgrades are blocked', 'degradaciones bloqueadas'))
+  if (status.injectionActivated === false) parts.push(tr('插件已被移除或停用', 'the plugin was removed or disabled', 'el complemento fue quitado o desactivado'))
   if (status.error) parts.push(status.error)
-  return parts.join(tr('；', '; '))
+  return parts.join(tr('；', '; ', '; '))
 }
 
 type PrimaryState = 'install' | 'update' | 'current' | 'blocked' | 'unknown'
@@ -158,14 +158,14 @@ function primaryState(installed: boolean, status: LinuxStatus | null): PrimarySt
 /** 主按钮文案（含可更新版本号，便于确认要装到哪一版）。 */
 function primaryLabel(state: PrimaryState, status: LinuxStatus | null): string {
   switch (state) {
-    case 'install': return tr('一键下载并安装', 'Download and install')
-    case 'current': return tr('已是最新版本', 'Up to date')
-    case 'blocked': return tr('已阻止降级', 'Downgrade blocked')
+    case 'install': return tr('一键下载并安装', 'Download and install', 'Descargar e instalar')
+    case 'current': return tr('已是最新版本', 'Up to date', 'Está al día')
+    case 'blocked': return tr('已阻止降级', 'Downgrade blocked', 'Degradación bloqueada')
     case 'update':
       return status?.availableVersion
-        ? tr('下载并安装更新（', 'Download and install update (') + status.availableVersion + '）'
-        : tr('下载并安装更新', 'Download and install update')
-    default: return tr('下载并安装更新', 'Download and install update')
+        ? tr('下载并安装更新（', 'Download and install update (', 'Descargar e instalar la actualización (') + status.availableVersion + '）'
+        : tr('下载并安装更新', 'Download and install update', 'Descargar e instalar la actualización')
+    default: return tr('下载并安装更新', 'Download and install update', 'Descargar e instalar la actualización')
   }
 }
 
@@ -379,26 +379,26 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
       data-linux-environment="true"
       data-phase={phase}
       data-installed={installed ? 'true' : 'false'}
-      aria-label={tr('Linux环境', 'Linux environment')}
+      aria-label={tr('Linux环境', 'Linux environment', 'Entorno Linux')}
     >
       <header className="dsh-linux-env-header">
         <span>
-          <strong>{tr('Linux环境', 'Linux environment')}</strong>
+          <strong>{tr('Linux环境', 'Linux environment', 'Entorno Linux')}</strong>
           <small>
             {tr(
               '实验性内部插件，默认不启用。只有你在这里明确安装后，Debian 环境才会下载、校验并启用；应用更新不会自动启用它。',
-              'Experimental internal plugin, off by default. Debian is downloaded, verified and enabled only when you install it here; app updates never enable it on their own.',
+              'Experimental internal plugin, off by default. Debian is downloaded, verified and enabled only when you install it here; app updates never enable it on their own.', 'Complemento interno experimental, desactivado por defecto. Debian solo se descarga, verifica y activa cuando tú lo instalas aquí; las actualizaciones de la app nunca lo activan por su cuenta.',
             )}
           </small>
         </span>
       </header>
 
       <p className="dsh-linux-env-status" role="status" aria-live="polite" data-linux-status="summary">
-        {statusError !== '' ? tr('状态暂不可读：', 'Status unavailable: ') + statusError : statusText(status)}
+        {statusError !== '' ? tr('状态暂不可读：', 'Status unavailable: ', 'Estado no disponible por ahora: ') + statusError : statusText(status)}
       </p>
       {autoCheckState === 'checking' && !attempting && phase !== 'failed' && (
         <p className="dsh-linux-env-hint" role="status" data-linux-auto-check="checking">
-          {tr('正在自动查询上游最新版本…', 'Checking upstream for the latest version…')}
+          {tr('正在自动查询上游最新版本…', 'Checking upstream for the latest version…', 'Consultando a upstream la versión más reciente…')}
         </p>
       )}
       {autoCheckState === 'done' && !attempting && phase !== 'failed' && status?.updateAvailable === true && status?.availableVersion && (
@@ -406,19 +406,19 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
           {installed
             ? tr(
               '发现上游新版本 ' + status.availableVersion + '，可一键下载并覆盖更新（保留用户数据并自动清理旧版残余）。',
-              'Upstream release ' + status.availableVersion + ' is available for one-click upgrade (preserves user data and cleans old leftovers).',
+              'Upstream release ' + status.availableVersion + ' is available for one-click upgrade (preserves user data and cleans old leftovers).', 'La versión de upstream ' + status.availableVersion + ' está disponible para actualizar con un toque (conserva los datos del usuario y limpia automáticamente los restos de la versión anterior).',
             )
-            : tr('已查询到上游最新版本 ' + status.availableVersion + '。', 'Latest upstream release: ' + status.availableVersion + '.')}
+            : tr('已查询到上游最新版本 ' + status.availableVersion + '。', 'Latest upstream release: ' + status.availableVersion + '.', 'Última versión publicada en upstream: ' + status.availableVersion + '.')}
         </p>
       )}
       {autoCheckState === 'done' && !attempting && phase !== 'failed' && installed && status?.updateAvailable === false && status?.updateBlocked !== true && (
         <p className="dsh-linux-env-hint" data-linux-auto-check="up-to-date">
-          {tr('已查询上游最新版本：当前已是最新。', 'Checked upstream: already up to date.')}
+          {tr('已查询上游最新版本：当前已是最新。', 'Checked upstream: already up to date.', 'Consultado upstream: ya está al día.')}
         </p>
       )}
       {autoCheckState === 'failed' && autoCheckError !== '' && !attempting && phase !== 'failed' && (
         <p className="dsh-linux-env-hint" data-linux-auto-check="failed">
-          {tr('自动查询上游更新失败（不影响现有环境与重装/卸载）：', 'Automatic update check failed (existing environment, reinstall, and removal remain available): ') + autoCheckError}
+          {tr('自动查询上游更新失败（不影响现有环境与重装/卸载）：', 'Automatic update check failed (existing environment, reinstall, and removal remain available): ', 'Falló la consulta automática de actualizaciones upstream (el entorno existente, la reinstalación y la eliminación siguen disponibles): ') + autoCheckError}
         </p>
       )}
       {operation !== '' && (
@@ -427,7 +427,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
 
       {runtimes.length > 1 && (
         <label className="dsh-linux-env-row">
-          <span>{tr('Linux 运行时', 'Linux runtime')}</span>
+          <span>{tr('Linux 运行时', 'Linux runtime', 'Runtime Linux')}</span>
           <select
             value={selectedRuntime}
             disabled={busy || installed}
@@ -457,7 +457,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
         <span>
           {tr(
             '自动更新（已启用时，DSH Mobile 版本变化后检查较新的 Linux 运行时）',
-            'Automatic updates (after a DSH Mobile version change, check for a newer Linux runtime)',
+            'Automatic updates (after a DSH Mobile version change, check for a newer Linux runtime)', 'Actualizaciones automáticas (tras un cambio de versión de DSH Mobile, busca un runtime Linux más nuevo)',
           )}
         </span>
       </label>
@@ -465,16 +465,16 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
       {progress !== null && (
         <p className="dsh-linux-env-progress" role="status" aria-live="polite" data-linux-progress={progress.stage}>
           {progress.stage === 'manifest'
-            ? tr('正在读取发布清单…', 'Reading the release manifest…')
+            ? tr('正在读取发布清单…', 'Reading the release manifest…', 'Leyendo el manifiesto de la versión…')
             : progress.stage === 'installing'
-              ? tr('资产已就绪，正在覆盖安装并清理旧版残余…', 'Assets are ready; installing update and cleaning old leftovers…')
+              ? tr('资产已就绪，正在覆盖安装并清理旧版残余…', 'Assets are ready; installing update and cleaning old leftovers…', 'Los recursos están listos; instalando la actualización por encima y limpiando restos de la versión anterior…')
               : (progress.index === undefined || progress.index === 0
-                ? tr('正在准备下载 ', 'Preparing ') + String(progress.total ?? 0) + tr(' 个资产', ' assets')
-                  + (progress.bytes !== undefined && progress.bytes > 0 ? tr('（约 ', ' (about ') + fmtBytes(progress.bytes) + '）' : '')
-                : fieldLabel(progress.field ?? '') + ' ' + String(progress.index) + '/' + String(progress.total ?? 0) + tr('：', ': ')
+                ? tr('正在准备下载 ', 'Preparing ', 'Preparando ') + String(progress.total ?? 0) + tr(' 个资产', ' assets', ' recursos')
+                  + (progress.bytes !== undefined && progress.bytes > 0 ? tr('（约 ', ' (about ', ' (aprox. ') + fmtBytes(progress.bytes) + '）' : '')
+                : fieldLabel(progress.field ?? '') + ' ' + String(progress.index) + '/' + String(progress.total ?? 0) + tr('：', ': ', ': ')
                   + (progress.phase === 'staged'
-                    ? tr('已就绪', 'ready')
-                    : progress.phase === 'starting' ? tr('开始', 'starting') : tr('下载并校验中', 'downloading and verifying')))}
+                    ? tr('已就绪', 'ready', 'listo')
+                    : progress.phase === 'starting' ? tr('开始', 'starting', 'iniciando') : tr('下载并校验中', 'downloading and verifying', 'descargando y verificando')))}
         </p>
       )}
 
@@ -496,7 +496,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
           disabled={busy || !installed}
           onClick={() => { void run(() => checkForUpdates(), 'checking') }}
         >
-          {tr('检查更新', 'Check for updates')}
+          {tr('检查更新', 'Check for updates', 'Buscar actualizaciones')}
         </button>
         <button
           type="button"
@@ -505,7 +505,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
           disabled={busy || !installed}
           onClick={() => { void install({ reinstall: true }) }}
         >
-          {tr('重新安装', 'Reinstall')}
+          {tr('重新安装', 'Reinstall', 'Reinstalar')}
         </button>
         <button
           type="button"
@@ -514,7 +514,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
           disabled={busy || !installed}
           onClick={() => { void run(() => uninstallEnvironment(), 'uninstalling') }}
         >
-          {tr('卸载 Linux 环境', 'Remove Linux environment')}
+          {tr('卸载 Linux 环境', 'Remove Linux environment', 'Quitar el entorno Linux')}
         </button>
         {installed && !busy && (
           <button
@@ -523,7 +523,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
             data-linux-action="back"
             onClick={() => { close() }}
           >
-            {tr('返回对话', 'Back to chat')}
+            {tr('返回对话', 'Back to chat', 'Volver al chat')}
           </button>
         )}
       </div>
@@ -538,7 +538,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
             disabled={attempting}
             onClick={() => { void install() }}
           >
-            {tr('重试', 'Retry')}
+            {tr('重试', 'Retry', 'Reintentar')}
           </button>
         </div>
       )}
@@ -547,7 +547,7 @@ export function LinuxEnvironmentSection({ close }: PropsRuntime<'settings.sectio
         <p className="dsh-linux-env-hint" data-linux-ready="true">
           {tr(
             'Linux 环境已就绪，可以直接回到对话使用 Linux 命令。',
-            'The Linux environment is ready. Go back to the conversation and use Linux commands.',
+            'The Linux environment is ready. Go back to the conversation and use Linux commands.', 'El entorno Linux está listo; vuelve a la conversación y usa comandos de Linux.',
           )}
         </p>
       )}

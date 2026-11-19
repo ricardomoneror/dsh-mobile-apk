@@ -91,7 +91,7 @@ function openAboutSection(): void {
   const dialog = document.querySelector('[data-dsh-settings-dialog]')
   const scope: ParentNode = dialog ?? document
   for (const button of scope.querySelectorAll<HTMLButtonElement>('nav button')) {
-    if (!(button.textContent ?? '').includes(tr('关于', 'About'))) continue
+    if (!(button.textContent ?? '').includes(tr('关于', 'About', 'Acerca de'))) continue
     // 入口可见，实际分区按钮隐藏；明确转发这一次用户点击。
     forwardControlClick(button)
     return
@@ -107,7 +107,7 @@ function ensureEntry(node: HTMLElement): void {
     button.className = 'dsh-about-entry'
     button.appendChild(infoIcon())
     const label = document.createElement('span')
-    label.textContent = tr('关于', 'About')
+    label.textContent = tr('关于', 'About', 'Acerca de')
     button.appendChild(label)
     node.insertAdjacentElement('afterend', button)
   }
@@ -127,7 +127,7 @@ export function installAboutEntry(): () => void {
   const syncNavRow = (scope: ParentNode): void => {
     const hasEntry = entryInstalled || scope.querySelector('[data-dsh-about-entry]') !== null
     for (const navRow of scope.querySelectorAll<HTMLElement>('nav button')) {
-      if (!(navRow.textContent ?? '').includes(tr('关于', 'About'))) continue
+      if (!(navRow.textContent ?? '').includes(tr('关于', 'About', 'Acerca de'))) continue
       if (hasEntry) {
         if (navRow.dataset.dshAboutNavHidden !== '1') {
           navRow.dataset.dshAboutNavHidden = '1'

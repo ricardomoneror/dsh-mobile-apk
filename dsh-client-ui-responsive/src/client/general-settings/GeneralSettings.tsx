@@ -98,7 +98,7 @@ export function GeneralSettings(_props: GeneralSettingsProps) {
   const toggleSidebarSwipe = useCallback((side: 'left' | 'right', enabled: boolean) => {
     if (!setSidebarSwipeEnabled(side, enabled)) {
       setNotice(tr('没有保存，浏览器存储不可用。',
-        'Not saved: browser storage is unavailable.'))
+        'Not saved: browser storage is unavailable.', 'No se guardó: el almacenamiento del navegador no está disponible.'))
       return
     }
     setNotice(null)
@@ -122,7 +122,7 @@ export function GeneralSettings(_props: GeneralSettingsProps) {
       window.androidBridge.setImmersiveMode(enabled)
     } catch {
       setNotice(tr('设置没有生效，请重开应用再试。',
-        'Setting not applied. Reopen the app and try again.'))
+        'Setting not applied. Reopen the app and try again.', 'El ajuste no se aplicó; vuelve a abrir la app y reintenta.'))
       refreshImmersive()
       return
     }
@@ -133,9 +133,9 @@ export function GeneralSettings(_props: GeneralSettingsProps) {
       setNotice(
         enabled
           ? tr('沉浸式状态栏没有开启，请检查显示权限。',
-            'Immersive status bar not enabled. Check the display permission in system settings.')
+            'Immersive status bar not enabled. Check the display permission in system settings.', 'La barra de estado inmersiva no está activada; revisa el permiso de pantalla en los ajustes del sistema.')
           : tr('状态栏没有恢复，请重试。',
-            'Status bar not restored. Try again.'),
+            'Status bar not restored. Try again.', 'La barra de estado no se restauró; reintenta.'),
       )
     }
   }, [refreshImmersive])
@@ -144,59 +144,59 @@ export function GeneralSettings(_props: GeneralSettingsProps) {
     <div data-plugin="android-general">
       <div className="dsh-gs-row" data-dsh-immersive="">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('沉浸式状态栏', 'Immersive status bar')}</div>
+          <div className="dsh-gs-title">{tr('沉浸式状态栏', 'Immersive status bar', 'Barra de estado inmersiva')}</div>
           <div className="dsh-gs-desc">
             {tr('隐藏状态栏，边缘滑动可临时呼出。',
-              'Hides the status bar; swipe from the edge to show it.')}
+              'Hides the status bar; swipe from the edge to show it.', 'Oculta la barra de estado; desliza desde el borde para mostrarla temporalmente.')}
           </div>
         </div>
         <Switch
           checked={immersive}
-          label={tr('沉浸式状态栏', 'Immersive status bar')}
+          label={tr('沉浸式状态栏', 'Immersive status bar', 'Barra de estado inmersiva')}
           onChange={toggleImmersive}
         />
       </div>
 
       <div className="dsh-gs-row" data-dsh-sidebar-swipe="left">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('左侧栏滑动', 'Swipe for the left sidebar')}</div>
+          <div className="dsh-gs-title">{tr('左侧栏滑动', 'Swipe for the left sidebar', 'Deslizar para la barra lateral izquierda')}</div>
           <div className="dsh-gs-desc">
             {tr('内容区滑动开合左侧栏。',
-              'Swipe the content area to open or close the left sidebar.')}
+              'Swipe the content area to open or close the left sidebar.', 'Desliza el área de contenido para abrir o cerrar la barra lateral izquierda.')}
           </div>
         </div>
         <Switch
           checked={leftSwipe}
-          label={tr('左侧栏滑动', 'Swipe for the left sidebar')}
+          label={tr('左侧栏滑动', 'Swipe for the left sidebar', 'Deslizar para la barra lateral izquierda')}
           onChange={(next) => toggleSidebarSwipe('left', next)}
         />
       </div>
 
       <div className="dsh-gs-row" data-dsh-sidebar-swipe="right">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('右侧栏滑动', 'Swipe for the right sidebar')}</div>
+          <div className="dsh-gs-title">{tr('右侧栏滑动', 'Swipe for the right sidebar', 'Deslizar para la barra lateral derecha')}</div>
           <div className="dsh-gs-desc">
             {tr('内容区滑动开合右侧栏。',
-              'Swipe the content area to open or close the right sidebar.')}
+              'Swipe the content area to open or close the right sidebar.', 'Desliza el área de contenido para abrir o cerrar la barra lateral derecha.')}
           </div>
         </div>
         <Switch
           checked={rightSwipe}
-          label={tr('右侧栏滑动', 'Swipe for the right sidebar')}
+          label={tr('右侧栏滑动', 'Swipe for the right sidebar', 'Deslizar para la barra lateral derecha')}
           onChange={(next) => toggleSidebarSwipe('right', next)}
         />
       </div>
 
       <div className="dsh-gs-row" data-dsh-feedback="">
         <div className="dsh-gs-text">
-          <div className="dsh-gs-title">{tr('意见反馈', 'Feedback')}</div>
+          <div className="dsh-gs-title">{tr('意见反馈', 'Feedback', 'Comentarios')}</div>
           <div className="dsh-gs-desc">
             {tr('在系统浏览器里打开问卷；会带上当前账号、构建版本与设备信息。',
-              'Opens a form in the system browser with your account, build and device info.')}
+              'Opens a form in the system browser with your account, build and device info.', 'Abre un cuestionario en el navegador del sistema; incluye la cuenta actual, la versión del build y los datos del equipo.')}
           </div>
         </div>
         <div className="dsh-gs-control">
-          <Button size="sm" variant="outline" onClick={openFeedback}>{tr('去反馈', 'Open')}</Button>
+          <Button size="sm" variant="outline" onClick={openFeedback}>{tr('去反馈', 'Open', 'Abrir')}</Button>
         </div>
       </div>
 

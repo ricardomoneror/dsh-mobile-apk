@@ -120,24 +120,24 @@ export function AboutSection(_props: PropsRuntime<'settings.section'>) {
         <img className="dsh-about-logo" src={ABOUT_LOGO_DATA_URL} alt="" width={148} height={148} />
         <div className="dsh-about-name">DeepCode</div>
         <div className="dsh-about-version" data-dsh-about-shell-version="">
-          {tr('DeepCode 版本：', 'DeepCode version: ')}
+          {tr('DeepCode 版本：', 'DeepCode version: ', 'Versión de DeepCode: ')}
           {shell === '' ? '—' : shell}
         </div>
         <div className="dsh-about-engine" data-dsh-about-engine-version="">
-          {tr('DeepSeek​Harness 版本：', 'DeepSeek​Harness version: ')}
+          {tr('DeepSeek​Harness 版本：', 'DeepSeek​Harness version: ', 'Versión de DeepSeekHarness: ')}
           {engine === '' ? '—' : engine}
         </div>
       </div>
 
       <div className="dsh-about-links" data-dsh-about-list="">
         <LinkRow
-          label={tr('GitHub 仓库', 'GitHub repository')}
+          label={tr('GitHub 仓库', 'GitHub repository', 'Repositorio de GitHub')}
           detail="kelai141/dsh-mobile-apk"
           url={REPO_URL}
         />
         <LinkRow
-          label={tr('QQ 交流群', 'QQ group')}
-          detail={tr('群号 1109493992', 'Group 1109493992')}
+          label={tr('QQ 交流群', 'QQ group', 'Grupo de QQ')}
+          detail={tr('群号 1109493992', 'Group 1109493992', 'Grupo 1109493992')}
           url={QQ_GROUP_URL}
         />
       </div>

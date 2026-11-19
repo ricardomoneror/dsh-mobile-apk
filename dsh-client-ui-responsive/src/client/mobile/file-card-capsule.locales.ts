@@ -16,6 +16,15 @@ export const en: typeof zh = {
   failed: 'Could not open or share this file. Try again.',
 }
 export type FileCardKey = keyof typeof zh
+/** Spanish copy (Chilean-neutral); Spanish is used only when the caller supplies it. */
+export const es: typeof zh = {
+  openExternal: 'Abrir con otra app: {name}',
+  share: 'Compartir este archivo',
+  noReceiver: 'Ninguna app puede manejar este archivo. Toca su nombre para probar la vista previa en la barra lateral.',
+  notReadable: 'Este archivo se movió, se borró o no se puede leer.',
+  notShareable: 'La carpeta de este archivo no permite compartirlo con otras apps.',
+  failed: 'No se pudo abrir ni compartir este archivo. Inténtalo otra vez.',
+}
 export function fileCardErrorKey(error: string | undefined): FileCardKey {
   if (error === 'no-receiver') return 'noReceiver'
   if (error === 'io') return 'notReadable'

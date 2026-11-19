@@ -38,7 +38,7 @@ import { ComposerSheet } from './mobile/composer-sheet.ts'
 import { zh as sheetZh, en as sheetEn } from './mobile/composer-sheet.locales.ts'
 import { FILE_CARD_CAPSULE_CSS } from './mobile/file-card-capsule.css.ts'
 import { FileCardCapsule, openExternalFile, type FileCardBridge } from './mobile/file-card-actions.ts'
-import { zh as cardZh, en as cardEn, fileCardErrorKey } from './mobile/file-card-capsule.locales.ts'
+import { zh as cardZh, en as cardEn, es as cardEs, fileCardErrorKey } from './mobile/file-card-capsule.locales.ts'
 import { PreviewExternalAction } from './mobile/PreviewExternalAction.tsx'
 import { zh as previewExternalZh, en as previewExternalEn } from './mobile/preview-external.locales.ts'
 import { COMPOSER_ROW_CSS } from './composer-row.css.ts'
@@ -299,11 +299,11 @@ export function apply(ctx: ClientContext): void {
   }
   ctx.effect(() => {
     const copy = () => ({
-      external: (name: string) => tr(cardZh.openExternal, cardEn.openExternal).replace('{name}', () => name),
-      share: tr(cardZh.share, cardEn.share),
+      external: (name: string) => tr(cardZh.openExternal, cardEn.openExternal, cardEs.openExternal).replace('{name}', () => name),
+      share: tr(cardZh.share, cardEn.share, cardEs.share),
       failure: (error: string | undefined) => {
         const key = fileCardErrorKey(error)
-        return tr(cardZh[key], cardEn[key])
+        return tr(cardZh[key], cardEn[key], cardEs[key])
       },
     })
     const capsule = new FileCardCapsule(bridgeFace, copy())
