@@ -129,6 +129,15 @@ jobs:
           # resolveNdk prioriza ANDROID_NDK_HOME sobre el SDK: el runner trae la
           # var apuntando a 27.3, hay que re-apuntarla al 27.0 instalado.
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> "$GITHUB_ENV"
+      - name: Instalar Rust 1.99.0 (pin de phone-control-core)
+        run: |
+          set -e
+          # native/phone-control-core/build-config.json fija rustc 1.99.0 y el
+          # selector exige coincidencia exacta entre toolchains instalados.
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain 1.99.0 --profile minimal
+          $HOME/.cargo/bin/rustup target add aarch64-linux-android --toolchain 1.99.0
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
 
 
       - name: 设置开发预览安装号
